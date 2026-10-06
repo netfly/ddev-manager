@@ -40,10 +40,19 @@ struct ProjectRow: View {
                 Button { NSWorkspace.shared.open(url) } label: { Image(systemName: "safari") }
                     .help(project.primaryURL ?? "")
             }
+        } else if project.status == .paused {
+            Button { Task { await store.start(project.name) } } label: { Image(systemName: "play.fill") }
+                .help("Resume")
+            Button { Task { await store.stop(project.name) } } label: { Image(systemName: "stop.fill") }
+                .help("Stop")
         } else {
             Button { Task { await store.start(project.name) } } label: { Image(systemName: "play.fill") }
                 .help("Start")
         }
+        Button {
+            NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: project.approot)
+        } label: { Image(systemName: "folder") }
+            .help("Open \(project.approot) in Finder")
     }
 
     @ViewBuilder private var contextItems: some View {

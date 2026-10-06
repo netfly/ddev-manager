@@ -18,8 +18,8 @@ struct DDEVManagerApp: App {
         MenuBarExtra {
             PanelView(store: store)
         } label: {
-            Image(systemName: store.projects.contains { $0.status.isRunning }
-                  ? "shippingbox.fill" : "shippingbox")
+            Image("MenuBarIcon")
+                .renderingMode(.template)
         }
         .menuBarExtraStyle(.window)   // required: we render a real panel, not a menu
 
