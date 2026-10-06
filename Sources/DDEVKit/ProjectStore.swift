@@ -44,15 +44,6 @@ public final class ProjectStore {
         await perform("__all__", label: "poweroff") { try await service.poweroff() }
     }
 
-    /// Starts every non-running project, one at a time (ddev serialises anyway;
-    /// parallel starts fight over the shared router).
-    public func startAllStopped() async {
-        let names = projects.filter { !$0.status.isRunning }.map(\.name)
-        await perform("__startAll__", label: "start all stopped") {
-            for name in names { try await service.start(name) }
-        }
-    }
-
     public func startColima() async {
         await perform("__colima__", label: "start colima") { try await colima.start() }
     }

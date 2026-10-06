@@ -66,21 +66,6 @@ final class ProjectStoreTests: XCTestCase {
     }
 
     @MainActor
-    func test_startAllStopped_startsEveryNonRunningProjectSequentially() async throws {
-        let runner = MockCommandRunner()
-        runner.results["list -j"] = CommandResult(stdout: try fixtureString("ddev-list.jsonl"), stderr: "", exitCode: 0)
-        let store = makeStore(runner: runner)
-        await store.refresh()
-        let expectedNames = store.projects.filter { !$0.status.isRunning }.map(\.name)
-
-        await store.startAllStopped()
-
-        let startedNames = runner.invocations.filter { $0.first == "start" }.map { $0[2] }
-        XCTAssertEqual(startedNames, expectedNames)
-        XCTAssertFalse(store.isBusy("__startAll__"))
-    }
-
-    @MainActor
     func test_startColima_noPath_setsErrorAndAppendsLog() async {
         let runner = MockCommandRunner()
         let store = makeStore(runner: runner, colimaPath: nil)

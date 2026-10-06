@@ -94,8 +94,6 @@ struct PanelView: View {
 
     private var footer: some View {
         HStack {
-            Button("Start all stopped") { Task { await store.startAllStopped() } }
-                .disabled(store.isBusy("__startAll__") || !store.projects.contains { !$0.status.isRunning })
             Button("Power off all") { Task { await store.poweroffAll() } }
                 .disabled(store.isBusy("__all__"))
             Spacer()
