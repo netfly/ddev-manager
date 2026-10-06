@@ -44,9 +44,13 @@ struct AboutView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-            Text("Built with ❤️ by MM Consulting")
-                .font(.caption)
-                .padding(.top, 4)
+            HStack(spacing: 4) {
+                Text("Built with ❤️ +")
+                SparkleMark(size: 12)
+                Text("by MM Consulting")
+            }
+            .font(.caption)
+            .padding(.top, 4)
 
             Link(destination: websiteURL) {
                 Text(websiteURL.host ?? websiteURL.absoluteString)
