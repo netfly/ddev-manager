@@ -9,6 +9,7 @@ struct PanelView: View {
     @State private var searchText = ""
     @State private var showLog = false
     @State private var showQuitConfirmation = false
+    @State private var showPoweroffConfirmation = false
 
     private var filteredProjects: [DDEVProject] {
         let base = searchText.isEmpty
@@ -102,8 +103,18 @@ struct PanelView: View {
 
     private var footer: some View {
         HStack {
-            Button("Power off all") { Task { await store.poweroffAll() } }
+            Button("Power off all") { showPoweroffConfirmation = true }
                 .disabled(store.isBusy("__all__"))
+                .confirmationDialog(
+                    "Power off all DDEV projects?",
+                    isPresented: $showPoweroffConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button("Power off all", role: .destructive) { Task { await store.poweroffAll() } }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("Stops the container engine for every running DDEV project (`ddev poweroff`).")
+                }
             Spacer()
             Button { showLog.toggle() } label: { Image(systemName: "list.bullet.rectangle") }
                 .help("Log")
