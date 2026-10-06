@@ -10,7 +10,8 @@ struct DDEVManagerApp: App {
         let runner = ProcessRunner()
         return ProjectStore(
             service: DDEVService(runner: runner, executablePath: path),
-            engineProbe: EngineProbe(runner: runner)
+            engineProbe: EngineProbe(runner: runner),
+            colima: ColimaController(runner: runner)
         )
     }()
 

@@ -5,6 +5,7 @@ struct PanelView: View {
     let store: ProjectStore
     @State private var refreshTask: Task<Void, Never>?
     @State private var searchText = ""
+    @State private var showLog = false
 
     private var filteredProjects: [DDEVProject] {
         guard !searchText.isEmpty else { return store.projects }
@@ -71,6 +72,15 @@ struct PanelView: View {
     private var header: some View {
         HStack {
             EngineBadge(state: store.engine)
+            if case .down = store.engine, store.colimaAvailable {
+                if store.isBusy("__colima__") {
+                    ProgressView().controlSize(.small)
+                } else {
+                    Button("Start Colima") { Task { await store.startColima() } }
+                        .buttonStyle(.borderless)
+                        .font(.system(size: 11))
+                }
+            }
             Spacer()
             if store.isRefreshing { ProgressView().controlSize(.small) }
             Button {
@@ -84,9 +94,13 @@ struct PanelView: View {
 
     private var footer: some View {
         HStack {
+            Button("Start all stopped") { Task { await store.startAllStopped() } }
+                .disabled(store.isBusy("__startAll__") || !store.projects.contains { !$0.status.isRunning })
             Button("Power off all") { Task { await store.poweroffAll() } }
                 .disabled(store.isBusy("__all__"))
             Spacer()
+            Button("Log") { showLog.toggle() }
+                .popover(isPresented: $showLog) { LogView(entries: store.log) }
             SettingsLink { Text("Settings…") }
             Button("Quit") { NSApplication.shared.terminate(nil) }
         }
