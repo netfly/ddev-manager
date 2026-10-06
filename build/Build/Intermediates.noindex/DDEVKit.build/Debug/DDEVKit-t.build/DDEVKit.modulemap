@@ -1,4 +1,0 @@
-module DDEVKit {
-header "DDEVKit-Swift.h"
-export *
-}

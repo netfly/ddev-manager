@@ -1,6 +1,0 @@
-Target dependency graph (3 targets)
-Target 'DDEVManager' in project 'DDEVManager'
-➜ Explicit dependency on target 'DDEVKit-product' in project 'DDEVKit'
-Target 'DDEVKit-product' in project 'DDEVKit'
-➜ Explicit dependency on target 'DDEVKit' in project 'DDEVKit'
-Target 'DDEVKit' in project 'DDEVKit' (no dependencies)
