@@ -8,8 +8,13 @@ struct PanelView: View {
     @State private var showLog = false
 
     private var filteredProjects: [DDEVProject] {
-        guard !searchText.isEmpty else { return store.projects }
-        return store.projects.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        let base = searchText.isEmpty
+            ? store.projects
+            : store.projects.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        return base.sorted { lhs, rhs in
+            let l = lhs.status.sortRank, r = rhs.status.sortRank
+            return l != r ? l < r : lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+        }
     }
 
     var body: some View {

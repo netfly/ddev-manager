@@ -26,6 +26,17 @@ public enum DDEVStatus: Equatable, Sendable {
     /// Projects that can be started (stopped or paused).
     public var isStartable: Bool { self != .running }
     public var isRunning: Bool { self == .running }
+
+    /// Lower sorts first: running projects surface at the top of the list.
+    public var sortRank: Int {
+        switch self {
+        case .running: 0
+        case .starting: 1
+        case .paused: 2
+        case .stopped: 3
+        case .unknown: 4
+        }
+    }
 }
 
 public struct DDEVProject: Decodable, Identifiable, Hashable, Sendable {
