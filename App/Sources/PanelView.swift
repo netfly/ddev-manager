@@ -8,6 +8,7 @@ struct PanelView: View {
     @State private var refreshTask: Task<Void, Never>?
     @State private var searchText = ""
     @State private var showLog = false
+    @State private var showAbout = false
     @State private var showQuitConfirmation = false
     @State private var showPoweroffConfirmation = false
 
@@ -121,6 +122,9 @@ struct PanelView: View {
             Button { showLog.toggle() } label: { Image(systemName: "list.bullet.rectangle") }
                 .help("Log")
                 .popover(isPresented: $showLog) { LogView(store: store) }
+            Button { showAbout.toggle() } label: { Image(systemName: "info.circle") }
+                .help("About DDEV Manager")
+                .popover(isPresented: $showAbout) { AboutView() }
             Button {
                 NSApp.activate(ignoringOtherApps: true)
                 openSettings()
