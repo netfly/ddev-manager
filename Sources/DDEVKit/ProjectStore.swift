@@ -14,12 +14,16 @@ public final class ProjectStore {
     private let service: DDEVService
     private let engineProbe: EngineProbe
     private let colima: ColimaController
-    private let logLimit = 20
+    private let logLimit = 50
+    private let logDefaultsKey = "ddevManager.actionLog"
+    private let defaults: UserDefaults
 
-    public init(service: DDEVService, engineProbe: EngineProbe, colima: ColimaController) {
+    public init(service: DDEVService, engineProbe: EngineProbe, colima: ColimaController, defaults: UserDefaults = .standard) {
         self.service = service
         self.engineProbe = engineProbe
         self.colima = colima
+        self.defaults = defaults
+        self.log = defaults.stringArray(forKey: logDefaultsKey) ?? []
     }
 
     public var colimaAvailable: Bool { colima.isAvailable }
@@ -69,5 +73,6 @@ public final class ProjectStore {
         if log.count > logLimit {
             log.removeFirst(log.count - logLimit)
         }
+        defaults.set(log, forKey: logDefaultsKey)
     }
 }

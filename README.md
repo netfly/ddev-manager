@@ -20,8 +20,8 @@ have installed.
 - **Engine status badge** showing whether Docker/Colima is reachable, with version. If the engine is
   down and `colima` is on your PATH, a **Start Colima** button appears right there.
 - **Power off all** — runs `ddev poweroff`.
-- **Action log** — a popover with the last 20 actions (success/failure with the real error text), since
-  `ddev start` failures can be verbose and easy to miss.
+- **Action log** — a popover with the last 50 actions (success/failure with the real error text),
+  persisted across restarts, since `ddev start` failures can be verbose and easy to miss.
 - **Settings**: override the `ddev` executable path, tune the auto-refresh interval, launch at login.
 - Auto-refreshes every 15s (configurable) while the panel is open, and after every action.
 
@@ -94,8 +94,9 @@ Expected — the build is ad-hoc signed, not notarized with an Apple Developer I
 Finder → **Open**, then confirm in the dialog. You only need to do this once per machine.
 
 **A start/stop action fails with no obvious reason.**
-Open the **Log** popover in the panel footer — it keeps the last 20 action results including the real
-`ddev` error text, which is easy to miss if you only glance at the inline error banner.
+Open the **Log** popover in the panel footer — it keeps the last 50 action results (persisted across
+restarts) including the real `ddev` error text, which is easy to miss if you only glance at the inline
+error banner.
 
 ## Architecture (for contributors)
 

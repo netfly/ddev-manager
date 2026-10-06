@@ -12,7 +12,8 @@ final class ProjectStoreTests: XCTestCase {
         ProjectStore(
             service: DDEVService(runner: runner, executablePath: "/opt/homebrew/bin/ddev"),
             engineProbe: EngineProbe(runner: runner, dockerPath: nil),
-            colima: ColimaController(runner: runner, path: colimaPath)
+            colima: ColimaController(runner: runner, path: colimaPath),
+            defaults: UserDefaults(suiteName: "ProjectStoreTests.\(UUID().uuidString)")!
         )
     }
 
@@ -96,14 +97,33 @@ final class ProjectStoreTests: XCTestCase {
     }
 
     @MainActor
-    func test_log_capsAt20Entries() async {
+    func test_log_capsAt50Entries() async {
         let runner = MockCommandRunner()
         let store = makeStore(runner: runner)
 
-        for _ in 0..<25 {
+        for _ in 0..<55 {
             await store.start("my-site")
         }
 
-        XCTAssertEqual(store.log.count, 20)
+        XCTAssertEqual(store.log.count, 50)
+    }
+
+    @MainActor
+    func test_log_persistsAcrossStoreInstances() async {
+        let runner = MockCommandRunner()
+        let defaults = UserDefaults(suiteName: "ProjectStoreTests.\(UUID().uuidString)")!
+        let service = DDEVService(runner: runner, executablePath: "/opt/homebrew/bin/ddev")
+        let first = ProjectStore(
+            service: service, engineProbe: EngineProbe(runner: runner, dockerPath: nil),
+            colima: ColimaController(runner: runner, path: nil), defaults: defaults
+        )
+        await first.start("my-site")
+        XCTAssertFalse(first.log.isEmpty)
+
+        let second = ProjectStore(
+            service: service, engineProbe: EngineProbe(runner: runner, dockerPath: nil),
+            colima: ColimaController(runner: runner, path: nil), defaults: defaults
+        )
+        XCTAssertEqual(second.log, first.log)
     }
 }
