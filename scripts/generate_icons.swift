@@ -1,4 +1,5 @@
 import AppKit
+import CoreText
 
 let fontName = "HelveticaNeue-CondensedBold"
 
@@ -15,6 +16,24 @@ func fittingFont(text: String, maxWidth: CGFloat, maxHeight: CGFloat) -> NSFont 
         size -= 1
     }
     return font(1)
+}
+
+/// Draws `text` centered on its actual visual ink bounds (via CTLineGetImageBounds),
+/// not on font ascent/descent/advance-width metrics — those pad unevenly around a
+/// single glyph like "D" and make it look off-center even though the box math is right.
+func drawCentered(_ text: String, font: NSFont, color: NSColor, in rect: NSRect, context: CGContext) {
+    let attrString = NSAttributedString(string: text, attributes: [.font: font, .foregroundColor: color])
+    let line = CTLineCreateWithAttributedString(attrString)
+    let inkBounds = CTLineGetImageBounds(line, context)
+    guard !inkBounds.isEmpty else { return }
+    let origin = NSPoint(
+        x: rect.minX + (rect.width - inkBounds.width) / 2 - inkBounds.minX,
+        y: rect.minY + (rect.height - inkBounds.height) / 2 - inkBounds.minY
+    )
+    context.saveGState()
+    context.textPosition = CGPoint(x: origin.x, y: origin.y)
+    CTLineDraw(line, context)
+    context.restoreGState()
 }
 
 /// Renders into an explicit bitmap context sized exactly `pixelsWide` x `pixelsHigh`,
@@ -79,10 +98,8 @@ func menuBarPNG(pixelsWide: Int, pixelsHigh: Int) -> Data {
 
         let text = "D"
         let f = fittingFont(text: text, maxWidth: rect.width * 0.6, maxHeight: rect.height * 0.62)
-        let attrs: [NSAttributedString.Key: Any] = [.font: f, .foregroundColor: NSColor.black]
-        let textSize = (text as NSString).size(withAttributes: attrs)
-        let origin = NSPoint(x: (rect.width - textSize.width) / 2, y: (rect.height - textSize.height) / 2)
-        (text as NSString).draw(at: origin, withAttributes: attrs)
+        let context = NSGraphicsContext.current!.cgContext
+        drawCentered(text, font: f, color: .black, in: rect, context: context)
     }
 }
 
