@@ -11,7 +11,7 @@ struct DDEVManagerApp: App {
         return ProjectStore(
             service: DDEVService(runner: runner, executablePath: path),
             engineProbe: EngineProbe(runner: runner),
-            colima: ColimaController(runner: runner)
+            containerEngine: ContainerEngineController(runner: runner)
         )
     }()
 

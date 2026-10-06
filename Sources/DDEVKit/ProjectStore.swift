@@ -8,30 +8,40 @@ public final class ProjectStore {
     public private(set) var busyProjects: Set<String> = []
     public private(set) var isRefreshing = false
     public private(set) var engine: EngineState = .down(reason: "not probed yet")
+    public private(set) var engineKind: ContainerEngineKind = .unknown("")
     public private(set) var log: [String] = []
     public var lastError: String?
 
     private let service: DDEVService
     private let engineProbe: EngineProbe
-    private let colima: ColimaController
+    private let containerEngine: ContainerEngineController
     private let logLimit = 50
     private let logDefaultsKey = "ddevManager.actionLog"
     private let defaults: UserDefaults
 
-    public init(service: DDEVService, engineProbe: EngineProbe, colima: ColimaController, defaults: UserDefaults = .standard) {
+    public init(
+        service: DDEVService,
+        engineProbe: EngineProbe,
+        containerEngine: ContainerEngineController,
+        defaults: UserDefaults = .standard
+    ) {
         self.service = service
         self.engineProbe = engineProbe
-        self.colima = colima
+        self.containerEngine = containerEngine
         self.defaults = defaults
         self.log = defaults.stringArray(forKey: logDefaultsKey) ?? []
     }
 
-    public var colimaAvailable: Bool { colima.isAvailable }
+    /// Whether the panel can offer a working "Start …" button for the detected backend
+    /// (Colima, Docker Desktop, OrbStack, Rancher Desktop, or a best-effort Colima fallback).
+    public var canStartEngine: Bool { containerEngine.canStart(kind: engineKind) }
+    public var engineKindDisplayName: String { engineKind.displayName }
 
     public func refresh() async {
         isRefreshing = true
         defer { isRefreshing = false }
         engine = await engineProbe.probe()
+        engineKind = await containerEngine.detectKind()
         do {
             projects = try await service.list()
             lastError = nil
@@ -48,8 +58,9 @@ public final class ProjectStore {
         await perform("__all__", label: "poweroff") { try await service.poweroff() }
     }
 
-    public func startColima() async {
-        await perform("__colima__", label: "start colima") { try await colima.start() }
+    public func startEngine() async {
+        let kind = engineKind
+        await perform("__engine__", label: "start \(kind.displayName)") { try await containerEngine.start(kind: kind) }
     }
 
     public func isBusy(_ name: String) -> Bool { busyProjects.contains(name) }

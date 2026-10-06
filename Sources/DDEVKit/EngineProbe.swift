@@ -16,8 +16,16 @@ public struct EngineProbe: Sendable {
     }
 
     public static func resolveDocker() -> String? {
-        ["/opt/homebrew/bin/docker", "/usr/local/bin/docker"]
-            .first { FileManager.default.isExecutableFile(atPath: $0) }
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let candidates = [
+            "/opt/homebrew/bin/docker",
+            "/usr/local/bin/docker",
+            "/opt/local/bin/docker",
+            "\(home)/.orbstack/bin/docker",
+            "\(home)/.rd/bin/docker",
+            "/Applications/Docker.app/Contents/Resources/bin/docker",
+        ]
+        return candidates.first { FileManager.default.isExecutableFile(atPath: $0) }
     }
 
     public func probe() async -> EngineState {

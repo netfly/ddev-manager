@@ -12,7 +12,7 @@ final class ProjectStoreTests: XCTestCase {
         ProjectStore(
             service: DDEVService(runner: runner, executablePath: "/opt/homebrew/bin/ddev"),
             engineProbe: EngineProbe(runner: runner, dockerPath: nil),
-            colima: ColimaController(runner: runner, path: colimaPath),
+            containerEngine: ContainerEngineController(runner: runner, dockerPath: nil, colimaPath: colimaPath),
             defaults: UserDefaults(suiteName: "ProjectStoreTests.\(UUID().uuidString)")!
         )
     }
@@ -67,33 +67,36 @@ final class ProjectStoreTests: XCTestCase {
     }
 
     @MainActor
-    func test_startColima_noPath_setsErrorAndAppendsLog() async {
+    func test_startEngine_noColimaAndUnknownKind_setsErrorAndAppendsLog() async {
         let runner = MockCommandRunner()
         let store = makeStore(runner: runner, colimaPath: nil)
 
-        await store.startColima()
+        await store.startEngine()
 
         XCTAssertNotNil(store.lastError)
-        XCTAssertTrue(store.log.last?.contains("start colima") ?? false)
+        XCTAssertTrue(store.log.last?.contains("start") ?? false)
     }
 
     @MainActor
-    func test_startColima_success_runsColimaStart() async throws {
+    func test_startEngine_colimaDetected_runsColimaStart() async throws {
         let runner = MockCommandRunner()
+        runner.results["context show"] = CommandResult(stdout: "colima\n", stderr: "", exitCode: 0)
         runner.results["list -j"] = CommandResult(stdout: try fixtureString("ddev-list.jsonl"), stderr: "", exitCode: 0)
         let store = makeStore(runner: runner, colimaPath: "/opt/homebrew/bin/colima")
+        await store.refresh()
+        XCTAssertEqual(store.engineKind, .colima)
 
-        await store.startColima()
+        await store.startEngine()
 
         XCTAssertTrue(runner.invocations.contains(["start"]))
         XCTAssertNil(store.lastError)
     }
 
     @MainActor
-    func test_colimaAvailable_reflectsControllerState() {
+    func test_canStartEngine_reflectsControllerState() {
         let runner = MockCommandRunner()
-        XCTAssertFalse(makeStore(runner: runner, colimaPath: nil).colimaAvailable)
-        XCTAssertTrue(makeStore(runner: runner, colimaPath: "/opt/homebrew/bin/colima").colimaAvailable)
+        XCTAssertFalse(makeStore(runner: runner, colimaPath: nil).canStartEngine)
+        XCTAssertTrue(makeStore(runner: runner, colimaPath: "/opt/homebrew/bin/colima").canStartEngine)
     }
 
     @MainActor
@@ -115,14 +118,14 @@ final class ProjectStoreTests: XCTestCase {
         let service = DDEVService(runner: runner, executablePath: "/opt/homebrew/bin/ddev")
         let first = ProjectStore(
             service: service, engineProbe: EngineProbe(runner: runner, dockerPath: nil),
-            colima: ColimaController(runner: runner, path: nil), defaults: defaults
+            containerEngine: ContainerEngineController(runner: runner, dockerPath: nil, colimaPath: nil), defaults: defaults
         )
         await first.start("my-site")
         XCTAssertFalse(first.log.isEmpty)
 
         let second = ProjectStore(
             service: service, engineProbe: EngineProbe(runner: runner, dockerPath: nil),
-            colima: ColimaController(runner: runner, path: nil), defaults: defaults
+            containerEngine: ContainerEngineController(runner: runner, dockerPath: nil, colimaPath: nil), defaults: defaults
         )
         XCTAssertEqual(second.log, first.log)
     }

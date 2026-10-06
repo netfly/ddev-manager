@@ -79,11 +79,11 @@ struct PanelView: View {
     private var header: some View {
         HStack {
             EngineBadge(state: store.engine)
-            if case .down = store.engine, store.colimaAvailable {
-                if store.isBusy("__colima__") {
+            if case .down = store.engine, store.canStartEngine {
+                if store.isBusy("__engine__") {
                     ProgressView().controlSize(.small)
                 } else {
-                    Button("Start Colima") { Task { await store.startColima() } }
+                    Button("Start \(store.engineKindDisplayName)") { Task { await store.startEngine() } }
                         .buttonStyle(.borderless)
                         .font(.system(size: 11))
                 }

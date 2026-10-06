@@ -17,8 +17,11 @@ have installed.
   folder in Finder (always visible, uses the real absolute path `ddev` reports), open in your terminal,
   open Mailpit, copy URL (context menu / right-click for the last few).
 - **Paused projects** can be resumed (Start) or fully stopped (Stop).
-- **Engine status badge** showing whether Docker/Colima is reachable, with version. If the engine is
-  down and `colima` is on your PATH, a **Start Colima** button appears right there.
+- **Engine status badge** showing whether the container backend is reachable, with version — works
+  with Docker Desktop, OrbStack, Rancher Desktop, or Colima, detected automatically via the active
+  `docker context`. If it's down, a **Start …** button appears, naming and launching whichever
+  backend is actually in use (`colima start`, or opening the Docker Desktop / OrbStack / Rancher
+  Desktop app).
 - **Power off all** — runs `ddev poweroff`.
 - **Action log** — a popover with the last 50 actions (success/failure with the real error text),
   persisted across restarts, since `ddev start` failures can be verbose and easy to miss.
@@ -29,9 +32,10 @@ have installed.
 
 - macOS 14+ (Sonoma or later)
 - [ddev](https://ddev.com) ≥ 1.25 installed (Homebrew: `brew install ddev/ddev/ddev`)
-- A container engine ddev can use — this app was built and tested against
-  [Colima](https://github.com/abiosoft/colima) + Docker CLI, but any setup `ddev` itself supports should
-  work once reachable via `docker version`.
+- A container engine ddev can use — **Docker Desktop, OrbStack, Rancher Desktop, and Colima are all
+  supported**; the app detects whichever one is active via `docker context show` and offers the
+  matching "Start …" action when it's down. Anything else `ddev` itself supports should work too, as
+  long as `docker version` succeeds.
 - Xcode command line tools + [XcodeGen](https://github.com/yonaskolb/XcodeGen) to build from source
   (`brew install xcodegen`)
 
@@ -80,9 +84,12 @@ checking a list of common `ddev` install locations. If `ddev` lives somewhere un
 Settings and restart the app.
 
 **Engine badge shows red / "Container engine down".**
-Docker (via Colima or another backend) isn't reachable. If `colima` is on PATH, click the **Start
-Colima** button that appears next to the badge. Otherwise run `colima start` (or your engine's
-equivalent) in a terminal, then hit the refresh button in the panel.
+The active backend (shown by name once detected) isn't reachable. If a **Start …** button appears next
+to the badge, click it — it runs `colima start` for Colima, or opens the Docker Desktop / OrbStack /
+Rancher Desktop app for those. Otherwise start your engine manually, then hit the refresh button in the
+panel. The app finds the `docker` CLI in Homebrew's directories as well as OrbStack's (`~/.orbstack/bin`),
+Rancher Desktop's (`~/.rd/bin`), and Docker Desktop's bundled location — if yours lives somewhere else,
+there's currently no override for it (only `ddev`'s path is configurable in Settings).
 
 **App not visible in the menu bar.**
 macOS can hide menu bar icons when the bar is full, or a third-party tool like Bartender can tuck it
@@ -109,7 +116,7 @@ found).
 
 ```
 Sources/DDEVKit/      — library: parsing, CommandRunner/ProcessRunner, DDEVService, EngineProbe,
-                        ColimaController, ProjectStore
+                        ContainerEngineController, ProjectStore
 Tests/DDEVKitTests/   — unit tests + recorded ddev-list.jsonl fixtures
 App/Sources/          — SwiftUI views: DDEVManagerApp, PanelView, ProjectRow, EngineBadge, LogView,
                         SettingsView, TerminalLauncher

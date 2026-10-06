@@ -30,8 +30,8 @@ struct EngineBadge: View {
 
     private var helpText: String {
         switch state {
-        case .down(let reason): "Start Colima first (`colima start`). \(reason)"
-        case .dockerMissing: "Install docker CLI (Colima + docker)."
+        case .down(let reason): "Container engine not reachable: \(reason)"
+        case .dockerMissing: "No `docker` CLI found. Install Docker Desktop, OrbStack, Rancher Desktop, or Colima + docker."
         case .running: "Container engine reachable"
         }
     }

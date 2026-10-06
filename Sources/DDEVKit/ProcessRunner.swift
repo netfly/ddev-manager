@@ -1,9 +1,19 @@
 import Foundation
 
 /// Runs a real subprocess with an explicit PATH, because a GUI app inherits
-/// only /usr/bin:/bin:/usr/sbin:/sbin and would never find Homebrew's ddev/docker.
+/// only /usr/bin:/bin:/usr/sbin:/sbin and would never find Homebrew's ddev/docker —
+/// or the docker CLI shims that OrbStack, Rancher Desktop, and Docker Desktop install
+/// outside Homebrew's directories.
 public struct ProcessRunner: CommandRunner {
-    public static let searchPath = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    public static let searchPath: String = {
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        return [
+            "/opt/homebrew/bin", "/usr/local/bin", "/opt/local/bin",
+            "\(home)/.orbstack/bin", "\(home)/.rd/bin",
+            "/Applications/Docker.app/Contents/Resources/bin",
+            "/usr/bin", "/bin", "/usr/sbin", "/sbin",
+        ].joined(separator: ":")
+    }()
 
     public init() {}
 
