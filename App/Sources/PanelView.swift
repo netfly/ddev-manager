@@ -1,8 +1,10 @@
 import SwiftUI
+import AppKit
 import DDEVKit
 
 struct PanelView: View {
     let store: ProjectStore
+    @Environment(\.openSettings) private var openSettings
     @State private var refreshTask: Task<Void, Never>?
     @State private var searchText = ""
     @State private var showLog = false
@@ -103,8 +105,11 @@ struct PanelView: View {
                 .disabled(store.isBusy("__all__"))
             Spacer()
             Button("Log") { showLog.toggle() }
-                .popover(isPresented: $showLog) { LogView(entries: store.log) }
-            SettingsLink { Text("Settings…") }
+                .popover(isPresented: $showLog) { LogView(store: store) }
+            Button("Settings…") {
+                NSApp.activate(ignoringOtherApps: true)
+                openSettings()
+            }
             Button("Quit") { NSApplication.shared.terminate(nil) }
         }
         .buttonStyle(.borderless)

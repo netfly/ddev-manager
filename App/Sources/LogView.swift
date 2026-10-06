@@ -1,15 +1,20 @@
 import SwiftUI
+import DDEVKit
 
+/// Takes the store directly (not a snapshot) so entries appear live as actions run,
+/// even while the popover stays open.
 struct LogView: View {
-    let entries: [String]
+    let store: ProjectStore
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 4) {
-                if entries.isEmpty {
-                    Text("No actions yet").foregroundStyle(.secondary)
+                if store.log.isEmpty {
+                    Text("No actions yet — start, stop, restart, or power off a project to see results here.")
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 } else {
-                    ForEach(Array(entries.enumerated().reversed()), id: \.offset) { _, line in
+                    ForEach(Array(store.log.enumerated().reversed()), id: \.offset) { _, line in
                         Text(line)
                             .font(.system(size: 11, design: .monospaced))
                             .textSelection(.enabled)
