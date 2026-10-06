@@ -71,8 +71,14 @@ func appIconPNG(pixelSize: Int) -> Data {
 
 func menuBarPNG(pixelsWide: Int, pixelsHigh: Int) -> Data {
     renderPNG(pixelsWide: pixelsWide, pixelsHigh: pixelsHigh) { rect in
-        let text = "DDEV"
-        let f = fittingFont(text: text, maxWidth: rect.width * 0.95, maxHeight: rect.height * 0.9)
+        let path = NSBezierPath(roundedRect: rect.insetBy(dx: rect.width * 0.06, dy: rect.height * 0.06),
+                                 xRadius: rect.width * 0.22, yRadius: rect.width * 0.22)
+        NSColor.black.withAlphaComponent(0.9).setStroke()
+        path.lineWidth = rect.width * 0.08
+        path.stroke()
+
+        let text = "D"
+        let f = fittingFont(text: text, maxWidth: rect.width * 0.6, maxHeight: rect.height * 0.62)
         let attrs: [NSAttributedString.Key: Any] = [.font: f, .foregroundColor: NSColor.black]
         let textSize = (text as NSString).size(withAttributes: attrs)
         let origin = NSPoint(x: (rect.width - textSize.width) / 2, y: (rect.height - textSize.height) / 2)
@@ -105,7 +111,7 @@ let menuBarScales: [(name: String, scale: Int)] = [
 ]
 
 for entry in menuBarScales {
-    let data = menuBarPNG(pixelsWide: 60 * entry.scale, pixelsHigh: 18 * entry.scale)
+    let data = menuBarPNG(pixelsWide: 18 * entry.scale, pixelsHigh: 18 * entry.scale)
     try data.write(to: URL(fileURLWithPath: "\(menuBarDir)/\(entry.name)"))
     print("wrote \(entry.name)")
 }

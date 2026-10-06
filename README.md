@@ -3,7 +3,7 @@
 A lightweight macOS menu bar app for managing [DDEV](https://ddev.com) projects — start, stop, restart,
 open in the browser, open the project folder, and power everything off — without touching a terminal.
 
-![menu bar icon: condensed "DDEV" wordmark](App/Assets.xcassets/MenuBarIcon.imageset/menubar@2x.png)
+![menu bar icon: a rounded-square "D" monogram badge](App/Assets.xcassets/MenuBarIcon.imageset/menubar@3x.png)
 
 No Dock icon, no daemon: it's a thin SwiftUI panel that shells out to the real `ddev` CLI you already
 have installed.
@@ -54,8 +54,8 @@ cp -R dist/DDEVManager.app /Applications/
 open -a /Applications/DDEVManager.app
 ```
 
-A condensed "DDEV" wordmark appears in the menu bar. Click it to open the panel. There's no Dock icon —
-this is a pure menu-bar (`LSUIElement`) app.
+A small rounded-square "D" badge appears in the menu bar. Click it to open the panel. There's no Dock
+icon — this is a pure menu-bar (`LSUIElement`) app.
 
 First launch may show a Gatekeeper warning since the app isn't notarized — see Troubleshooting below.
 
