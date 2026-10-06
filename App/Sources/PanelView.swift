@@ -8,6 +8,7 @@ struct PanelView: View {
     @State private var refreshTask: Task<Void, Never>?
     @State private var searchText = ""
     @State private var showLog = false
+    @State private var showQuitConfirmation = false
 
     private var filteredProjects: [DDEVProject] {
         let base = searchText.isEmpty
@@ -112,8 +113,18 @@ struct PanelView: View {
                 openSettings()
             } label: { Image(systemName: "gearshape") }
                 .help("Settings…")
-            Button { NSApplication.shared.terminate(nil) } label: { Image(systemName: "power") }
+            Button { showQuitConfirmation = true } label: { Image(systemName: "power") }
                 .help("Quit")
+                .confirmationDialog(
+                    "Quit DDEV Manager?",
+                    isPresented: $showQuitConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button("Quit", role: .destructive) { NSApplication.shared.terminate(nil) }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("Running DDEV projects stay running — this only closes the menu bar app.")
+                }
         }
         .buttonStyle(.borderless)
         .padding(8)
