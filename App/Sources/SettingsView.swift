@@ -8,26 +8,55 @@ struct SettingsView: View {
     @State private var loginError: String?
 
     var body: some View {
-        Form {
-            TextField("ddev path (blank = auto-detect)", text: $ddevPath)
-                .frame(width: 320)
-            Stepper("Auto-refresh every \(autoRefreshSeconds)s",
-                    value: $autoRefreshSeconds, in: 5...300, step: 5)
-            Toggle("Launch at login", isOn: $launchAtLogin)
-                .onChange(of: launchAtLogin) { _, enabled in
-                    do {
-                        enabled ? try SMAppService.mainApp.register()
-                                : try SMAppService.mainApp.unregister()
-                    } catch {
-                        loginError = error.localizedDescription
-                        launchAtLogin = SMAppService.mainApp.status == .enabled
+        VStack(alignment: .leading, spacing: 18) {
+            Text("DDEV Manager Settings")
+                .font(.headline)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("ddev executable path")
+                    .font(.subheadline.weight(.medium))
+                TextField("blank = auto-detect", text: $ddevPath)
+                    .textFieldStyle(.roundedBorder)
+                Text("Changing this requires restarting the app.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Auto-refresh interval (seconds)")
+                    .font(.subheadline.weight(.medium))
+                TextField("15", value: $autoRefreshSeconds, format: .number)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 80)
+                    .onChange(of: autoRefreshSeconds) { _, newValue in
+                        let clamped = min(300, max(5, newValue))
+                        if clamped != newValue { autoRefreshSeconds = clamped }
                     }
+                Text("How often the panel polls `ddev list` while open. Range 5–300.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Toggle("Launch at login", isOn: $launchAtLogin)
+                    .onChange(of: launchAtLogin) { _, enabled in
+                        do {
+                            enabled ? try SMAppService.mainApp.register()
+                                    : try SMAppService.mainApp.unregister()
+                        } catch {
+                            loginError = error.localizedDescription
+                            launchAtLogin = SMAppService.mainApp.status == .enabled
+                        }
+                    }
+                if let loginError {
+                    Text(loginError)
+                        .font(.caption)
+                        .foregroundStyle(.red)
                 }
-            if let loginError { Text(loginError).font(.caption).foregroundStyle(.red) }
-            Text("Changing the ddev path requires restarting the app.")
-                .font(.caption).foregroundStyle(.secondary)
+            }
         }
         .padding(20)
-        .frame(width: 400)
+        .frame(width: 420, alignment: .leading)
+        .fixedSize(horizontal: false, vertical: true)
     }
 }

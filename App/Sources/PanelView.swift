@@ -118,7 +118,8 @@ struct PanelView: View {
 
     private func startAutoRefresh() {
         refreshTask?.cancel()
-        let seconds = max(5, UserDefaults.standard.integer(forKey: SettingsKey.autoRefreshSeconds))
+        let stored = UserDefaults.standard.integer(forKey: SettingsKey.autoRefreshSeconds)
+        let seconds = min(300, max(5, stored == 0 ? 15 : stored))
         refreshTask = Task {
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(seconds))
