@@ -105,15 +105,17 @@ struct PanelView: View {
         HStack {
             Button("Power off all") { showPoweroffConfirmation = true }
                 .disabled(store.isBusy("__all__"))
-                .confirmationDialog(
-                    "Power off all DDEV projects?",
-                    isPresented: $showPoweroffConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button("Power off all", role: .destructive) { Task { await store.poweroffAll() } }
-                    Button("Cancel", role: .cancel) {}
-                } message: {
-                    Text("Stops the container engine for every running DDEV project (`ddev poweroff`).")
+                .popover(isPresented: $showPoweroffConfirmation) {
+                    ConfirmationPopover(
+                        title: "Power off all DDEV projects?",
+                        message: "Stops the container engine for every running DDEV project (`ddev poweroff`).",
+                        confirmTitle: "Power off all",
+                        onCancel: { showPoweroffConfirmation = false },
+                        onConfirm: {
+                            showPoweroffConfirmation = false
+                            Task { await store.poweroffAll() }
+                        }
+                    )
                 }
             Spacer()
             Button { showLog.toggle() } label: { Image(systemName: "list.bullet.rectangle") }
@@ -126,15 +128,14 @@ struct PanelView: View {
                 .help("Settings…")
             Button { showQuitConfirmation = true } label: { Image(systemName: "power") }
                 .help("Quit")
-                .confirmationDialog(
-                    "Quit DDEV Manager?",
-                    isPresented: $showQuitConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button("Quit", role: .destructive) { NSApplication.shared.terminate(nil) }
-                    Button("Cancel", role: .cancel) {}
-                } message: {
-                    Text("Running DDEV projects stay running — this only closes the menu bar app.")
+                .popover(isPresented: $showQuitConfirmation) {
+                    ConfirmationPopover(
+                        title: "Quit DDEV Manager?",
+                        message: "Running DDEV projects stay running — this only closes the menu bar app.",
+                        confirmTitle: "Quit",
+                        onCancel: { showQuitConfirmation = false },
+                        onConfirm: { NSApplication.shared.terminate(nil) }
+                    )
                 }
         }
         .buttonStyle(.borderless)
