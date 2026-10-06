@@ -40,7 +40,7 @@ struct PanelView: View {
                         }
                     }
                 }
-                .frame(maxHeight: 420)
+                .frame(maxHeight: 840)
             }
             if let error = store.lastError {
                 Divider()
