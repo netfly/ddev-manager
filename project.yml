@@ -1,0 +1,38 @@
+name: DDEVManager
+options:
+  bundleIdPrefix: de.markus.ddevmanager
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+packages:
+  DDEVKit:
+    path: .
+targets:
+  DDEVManager:
+    type: application
+    platform: macOS
+    sources:
+      - path: App/Sources
+    dependencies:
+      - package: DDEVKit
+        product: DDEVKit
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleName: DDEV Manager
+        CFBundleDisplayName: DDEV Manager
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSUIElement: true          # menu-bar only, no Dock icon
+        LSMinimumSystemVersion: "14.0"
+        NSHumanReadableCopyright: ""
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: de.markus.ddevmanager
+        MARKETING_VERSION: "0.1.0"
+        ENABLE_APP_SANDBOX: NO          # must exec ddev/docker
+        ENABLE_HARDENED_RUNTIME: NO
+        CODE_SIGN_IDENTITY: "-"         # ad-hoc, local use only
+        CODE_SIGNING_REQUIRED: NO
+        SWIFT_VERSION: "6.0"
+        DEVELOPMENT_TEAM: ""

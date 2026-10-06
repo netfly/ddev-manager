@@ -1,0 +1,79 @@
+{
+  "" : {
+    "diagnostics" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVKit-primary.dia",
+    "emit-module-dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVKit-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVKit-primary-emit-module.dia",
+    "pch" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVKit-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVKit-primary.swiftdeps"
+  },
+  "/Users/markus/Development/apps/ddevManager/Sources/DDEVKit/CommandRunner.swift" : {
+    "const-values" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/CommandRunner.swiftconstvalues",
+    "dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/CommandRunner.d",
+    "diagnostics" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/CommandRunner.dia",
+    "index-unit-output-path" : "/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/CommandRunner.o",
+    "llvm-bc" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/CommandRunner.bc",
+    "object" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/CommandRunner.o",
+    "swift-dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/CommandRunner.swiftdeps",
+    "swiftmodule" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/CommandRunner~partial.swiftmodule"
+  },
+  "/Users/markus/Development/apps/ddevManager/Sources/DDEVKit/DDEVListParser.swift" : {
+    "const-values" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVListParser.swiftconstvalues",
+    "dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVListParser.d",
+    "diagnostics" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVListParser.dia",
+    "index-unit-output-path" : "/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVListParser.o",
+    "llvm-bc" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVListParser.bc",
+    "object" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVListParser.o",
+    "swift-dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVListParser.swiftdeps",
+    "swiftmodule" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVListParser~partial.swiftmodule"
+  },
+  "/Users/markus/Development/apps/ddevManager/Sources/DDEVKit/DDEVProject.swift" : {
+    "const-values" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVProject.swiftconstvalues",
+    "dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVProject.d",
+    "diagnostics" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVProject.dia",
+    "index-unit-output-path" : "/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVProject.o",
+    "llvm-bc" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVProject.bc",
+    "object" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVProject.o",
+    "swift-dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVProject.swiftdeps",
+    "swiftmodule" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVProject~partial.swiftmodule"
+  },
+  "/Users/markus/Development/apps/ddevManager/Sources/DDEVKit/DDEVService.swift" : {
+    "const-values" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVService.swiftconstvalues",
+    "dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVService.d",
+    "diagnostics" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVService.dia",
+    "index-unit-output-path" : "/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVService.o",
+    "llvm-bc" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVService.bc",
+    "object" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVService.o",
+    "swift-dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVService.swiftdeps",
+    "swiftmodule" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/DDEVService~partial.swiftmodule"
+  },
+  "/Users/markus/Development/apps/ddevManager/Sources/DDEVKit/EngineProbe.swift" : {
+    "const-values" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/EngineProbe.swiftconstvalues",
+    "dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/EngineProbe.d",
+    "diagnostics" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/EngineProbe.dia",
+    "index-unit-output-path" : "/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/EngineProbe.o",
+    "llvm-bc" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/EngineProbe.bc",
+    "object" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/EngineProbe.o",
+    "swift-dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/EngineProbe.swiftdeps",
+    "swiftmodule" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/EngineProbe~partial.swiftmodule"
+  },
+  "/Users/markus/Development/apps/ddevManager/Sources/DDEVKit/ProcessRunner.swift" : {
+    "const-values" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProcessRunner.swiftconstvalues",
+    "dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProcessRunner.d",
+    "diagnostics" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProcessRunner.dia",
+    "index-unit-output-path" : "/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProcessRunner.o",
+    "llvm-bc" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProcessRunner.bc",
+    "object" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProcessRunner.o",
+    "swift-dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProcessRunner.swiftdeps",
+    "swiftmodule" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProcessRunner~partial.swiftmodule"
+  },
+  "/Users/markus/Development/apps/ddevManager/Sources/DDEVKit/ProjectStore.swift" : {
+    "const-values" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProjectStore.swiftconstvalues",
+    "dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProjectStore.d",
+    "diagnostics" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProjectStore.dia",
+    "index-unit-output-path" : "/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProjectStore.o",
+    "llvm-bc" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProjectStore.bc",
+    "object" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProjectStore.o",
+    "swift-dependencies" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProjectStore.swiftdeps",
+    "swiftmodule" : "/Users/markus/Development/apps/ddevManager/build/Build/Intermediates.noindex/DDEVKit.build/Debug/DDEVKit-t.build/Objects-normal/arm64/ProjectStore~partial.swiftmodule"
+  }
+}
