@@ -8,10 +8,11 @@ final class ProjectStoreTests: XCTestCase {
     }
 
     @MainActor
-    private func makeStore(runner: MockCommandRunner) -> ProjectStore {
+    private func makeStore(runner: MockCommandRunner, colimaPath: String? = nil) -> ProjectStore {
         ProjectStore(
             service: DDEVService(runner: runner, executablePath: "/opt/homebrew/bin/ddev"),
-            engineProbe: EngineProbe(runner: runner, dockerPath: nil)
+            engineProbe: EngineProbe(runner: runner, dockerPath: nil),
+            colima: ColimaController(runner: runner, path: colimaPath)
         )
     }
 
@@ -62,5 +63,62 @@ final class ProjectStoreTests: XCTestCase {
 
         XCTAssertNotNil(store.lastError)
         XCTAssertFalse(store.isBusy("my-site"))
+    }
+
+    @MainActor
+    func test_startAllStopped_startsEveryNonRunningProjectSequentially() async throws {
+        let runner = MockCommandRunner()
+        runner.results["list -j"] = CommandResult(stdout: try fixtureString("ddev-list.jsonl"), stderr: "", exitCode: 0)
+        let store = makeStore(runner: runner)
+        await store.refresh()
+        let expectedNames = store.projects.filter { !$0.status.isRunning }.map(\.name)
+
+        await store.startAllStopped()
+
+        let startedNames = runner.invocations.filter { $0.first == "start" }.map { $0[2] }
+        XCTAssertEqual(startedNames, expectedNames)
+        XCTAssertFalse(store.isBusy("__startAll__"))
+    }
+
+    @MainActor
+    func test_startColima_noPath_setsErrorAndAppendsLog() async {
+        let runner = MockCommandRunner()
+        let store = makeStore(runner: runner, colimaPath: nil)
+
+        await store.startColima()
+
+        XCTAssertNotNil(store.lastError)
+        XCTAssertTrue(store.log.last?.contains("start colima") ?? false)
+    }
+
+    @MainActor
+    func test_startColima_success_runsColimaStart() async throws {
+        let runner = MockCommandRunner()
+        runner.results["list -j"] = CommandResult(stdout: try fixtureString("ddev-list.jsonl"), stderr: "", exitCode: 0)
+        let store = makeStore(runner: runner, colimaPath: "/opt/homebrew/bin/colima")
+
+        await store.startColima()
+
+        XCTAssertTrue(runner.invocations.contains(["start"]))
+        XCTAssertNil(store.lastError)
+    }
+
+    @MainActor
+    func test_colimaAvailable_reflectsControllerState() {
+        let runner = MockCommandRunner()
+        XCTAssertFalse(makeStore(runner: runner, colimaPath: nil).colimaAvailable)
+        XCTAssertTrue(makeStore(runner: runner, colimaPath: "/opt/homebrew/bin/colima").colimaAvailable)
+    }
+
+    @MainActor
+    func test_log_capsAt20Entries() async {
+        let runner = MockCommandRunner()
+        let store = makeStore(runner: runner)
+
+        for _ in 0..<25 {
+            await store.start("my-site")
+        }
+
+        XCTAssertEqual(store.log.count, 20)
     }
 }
