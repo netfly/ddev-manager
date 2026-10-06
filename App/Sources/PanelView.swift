@@ -104,13 +104,16 @@ struct PanelView: View {
             Button("Power off all") { Task { await store.poweroffAll() } }
                 .disabled(store.isBusy("__all__"))
             Spacer()
-            Button("Log") { showLog.toggle() }
+            Button { showLog.toggle() } label: { Image(systemName: "list.bullet.rectangle") }
+                .help("Log")
                 .popover(isPresented: $showLog) { LogView(store: store) }
-            Button("Settings…") {
+            Button {
                 NSApp.activate(ignoringOtherApps: true)
                 openSettings()
-            }
-            Button("Quit") { NSApplication.shared.terminate(nil) }
+            } label: { Image(systemName: "gearshape") }
+                .help("Settings…")
+            Button { NSApplication.shared.terminate(nil) } label: { Image(systemName: "power") }
+                .help("Quit")
         }
         .buttonStyle(.borderless)
         .padding(8)
