@@ -26,6 +26,18 @@ public struct DDEVService: Sendable {
         return try DDEVListParser.parse(result.stdout)
     }
 
+    /// One process per project — call only on demand (detail popover), never in list refresh.
+    public func describe(_ name: String) async throws -> DDEVProjectDescription {
+        let result = try await exec(["describe", name, "-j"], timeout: 60)
+        return try DDEVDescribeParser.parse(result.stdout)
+    }
+
+    /// Toolchain versions; cheap but static, so the store caches the result.
+    public func versionInfo() async throws -> DDEVVersionInfo {
+        let result = try await exec(["version", "-j"], timeout: 30)
+        return try DDEVVersionParser.parse(result.stdout)
+    }
+
     public func start(_ name: String) async throws { _ = try await exec(["start", "-y", name], timeout: 300) }
     public func stop(_ name: String) async throws { _ = try await exec(["stop", name], timeout: 120) }
     public func restart(_ name: String) async throws { _ = try await exec(["restart", "-y", name], timeout: 300) }

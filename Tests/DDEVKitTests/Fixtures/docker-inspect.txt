@@ -1,0 +1,2 @@
+/ddev-router|running|healthy|2026-10-06T15:20:32.061062399Z|0|ddev/ddev-traefik-router:v1.25.4
+/ddev-ssh-agent|running|healthy|2026-10-06T15:20:24.497538849Z|0|ddev/ddev-ssh-agent:v1.25.4

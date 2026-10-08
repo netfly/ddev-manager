@@ -1,0 +1,2 @@
+{"BlockIO":"1.57MB / 0B","CPUPerc":"0.02%","Container":"7a6270de5435ce8ee984fe4af3f1e1a3974c24e56c0e7f2d734973e1f82defae","ID":"7a6270de5435","MemPerc":"0.25%","MemUsage":"20MiB / 7.738GiB","Name":"ddev-router","NetIO":"1.01kB / 126B","PIDs":"16"}
+{"BlockIO":"0B / 0B","CPUPerc":"0.00%","Container":"96f04de1932e81eae17da3cba4a7831ff7b083c9d8e9f56ad000d1a2250fec61","ID":"96f04de1932e","MemPerc":"0.04%","MemUsage":"2.852MiB / 7.738GiB","Name":"ddev-ssh-agent","NetIO":"5.21kB / 126B","PIDs":"5"}
