@@ -11,7 +11,8 @@ struct DDEVManagerApp: App {
         return ProjectStore(
             service: DDEVService(runner: runner, executablePath: path),
             engineProbe: EngineProbe(runner: runner),
-            containerEngine: ContainerEngineController(runner: runner)
+            containerEngine: ContainerEngineController(runner: runner),
+            inspector: DockerInspector(runner: runner)
         )
     }()
 
@@ -33,4 +34,5 @@ struct DDEVManagerApp: App {
 enum SettingsKey {
     static let ddevPath = "ddevExecutablePath"
     static let autoRefreshSeconds = "autoRefreshSeconds"
+    static let appearance = "appearance"
 }

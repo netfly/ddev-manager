@@ -4,6 +4,7 @@ import DDEVKit
 struct ProjectRow: View {
     let project: DDEVProject
     let store: ProjectStore
+    @State private var showDetails = false
 
     private var busy: Bool { store.isBusy(project.name) }
 
@@ -22,7 +23,12 @@ struct ProjectRow: View {
             if busy {
                 ProgressView().controlSize(.small)
             } else {
-                controls
+                // Tighter than the default: a row can hold up to five controls, so they get
+                // small control size and minimal horizontal padding to stay on one line.
+                HStack(spacing: 2) {
+                    controls
+                }
+                .buttonStyle(CompactIconButtonStyle())
             }
         }
         .padding(.horizontal, 10)
@@ -53,6 +59,11 @@ struct ProjectRow: View {
             NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: project.approot)
         } label: { Image(systemName: "folder") }
             .help("Open \(project.approot) in Finder")
+        Button { showDetails.toggle() } label: { Image(systemName: "info.circle") }
+            .help("Project details")
+            .popover(isPresented: $showDetails, arrowEdge: .trailing) {
+                ProjectDetailView(project: project, store: store)
+            }
     }
 
     @ViewBuilder private var contextItems: some View {

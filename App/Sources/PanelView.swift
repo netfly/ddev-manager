@@ -8,6 +8,7 @@ struct PanelView: View {
     @State private var refreshTask: Task<Void, Never>?
     @State private var searchText = ""
     @State private var showLog = false
+    @State private var showEngineInfo = false
     @State private var showAbout = false
     @State private var showQuitConfirmation = false
     @State private var showPoweroffConfirmation = false
@@ -59,7 +60,10 @@ struct PanelView: View {
             footer
         }
         .frame(width: 380)
-        .task { await store.refresh() }
+        .task {
+            AppearanceMode.current().apply()
+            await store.refresh()
+        }
         .onAppear { startAutoRefresh() }
         .onDisappear { refreshTask?.cancel() }
     }
@@ -81,7 +85,14 @@ struct PanelView: View {
 
     private var header: some View {
         HStack {
-            EngineBadge(state: store.engine)
+            Button { showEngineInfo.toggle() } label: { EngineBadge(state: store.engine) }
+                .buttonStyle(.plain)
+            Button { showEngineInfo.toggle() } label: { Image(systemName: "info.circle") }
+                .buttonStyle(.borderless)
+                .help("Container engine details")
+                .popover(isPresented: $showEngineInfo, arrowEdge: .bottom) {
+                    EngineInfoView(store: store)
+                }
             if case .down = store.engine, store.canStartEngine {
                 if store.isBusy("__engine__") {
                     ProgressView().controlSize(.small)
