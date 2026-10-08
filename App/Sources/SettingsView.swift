@@ -4,6 +4,7 @@ import ServiceManagement
 struct SettingsView: View {
     @AppStorage(SettingsKey.ddevPath) private var ddevPath = ""
     @AppStorage(SettingsKey.autoRefreshSeconds) private var autoRefreshSeconds = 15
+    @AppStorage(SettingsKey.appearance) private var appearance = AppearanceMode.system.rawValue
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
     @State private var loginError: String?
 
@@ -33,6 +34,25 @@ struct SettingsView: View {
                         if clamped != newValue { autoRefreshSeconds = clamped }
                     }
                 Text("How often the panel polls `ddev list` while open. Range 5–300.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Appearance")
+                    .font(.subheadline.weight(.medium))
+                Picker("", selection: $appearance) {
+                    ForEach(AppearanceMode.allCases) { mode in
+                        Text(mode.label).tag(mode.rawValue)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .frame(width: 240)
+                .onChange(of: appearance) { _, _ in
+                    AppearanceMode.current().apply()
+                }
+                Text("Applies to the panel, its popovers, and this window. “System” follows macOS.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
