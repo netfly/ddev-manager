@@ -46,6 +46,14 @@ struct ProjectRow: View {
                 Button { NSWorkspace.shared.open(url) } label: { Image(systemName: "safari") }
                     .help(project.primaryURL ?? "")
             }
+            Button { openSSH() } label: { Image(systemName: "terminal") }
+                .help("ddev ssh in \(TerminalLauncher.preferred.displayName)")
+            if let client = databaseClient {
+                Button { Task { await store.openDatabaseClient(client, project: project) } } label: {
+                    Image(systemName: "cylinder.split.1x2")
+                }
+                .help("Open database in \(client.displayName) (ddev \(client.ddevCommand))")
+            }
         } else if project.status == .paused {
             Button { Task { await store.start(project.name) } } label: { Image(systemName: "play.fill") }
                 .help("Resume")
@@ -70,7 +78,15 @@ struct ProjectRow: View {
         Button("Open project folder") {
             NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: project.approot)
         }
-        Button("Open in Terminal") { TerminalLauncher.open(path: project.approot) }
+        Button("Open in Terminal") { openFolderInTerminal() }
+        if project.status.isRunning {
+            Button("ddev ssh") { openSSH() }
+            if let client = databaseClient {
+                Button("Open in \(client.displayName)") {
+                    Task { await store.openDatabaseClient(client, project: project) }
+                }
+            }
+        }
         if let mailpit = project.mailpitURL.flatMap(URL.init(string:)) {
             Button("Open Mailpit") { NSWorkspace.shared.open(mailpit) }
         }
@@ -80,6 +96,34 @@ struct ProjectRow: View {
             NSPasteboard.general.setString(project.primaryURL ?? "", forType: .string)
         }
         Text(project.displayPath)
+    }
+
+    /// The DB client chosen in Settings, or the first installed one.
+    private var databaseClient: DatabaseClient? {
+        DatabaseClient.resolve(preference: UserDefaults.standard.string(forKey: SettingsKey.databaseClient))
+    }
+
+    /// `ddev ssh` needs an interactive terminal, so it is launched into the preferred terminal
+    /// app rather than run through the store's CommandRunner.
+    private func openSSH() {
+        let terminal = TerminalLauncher.preferred
+        let failure = TerminalLauncher.run(
+            command: "\(ShellQuote.single(store.ddevExecutablePath)) ssh",
+            in: project.approot,
+            scriptName: "ssh-\(project.name)"
+        )
+        store.recordExternalAction(
+            label: "ddev ssh for \(project.name) in \(terminal.displayName)",
+            failure: failure
+        )
+    }
+
+    private func openFolderInTerminal() {
+        let failure = TerminalLauncher.open(path: project.approot)
+        store.recordExternalAction(
+            label: "open \(project.name) in \(TerminalLauncher.preferred.displayName)",
+            failure: failure
+        )
     }
 
     private func color(for status: DDEVStatus) -> Color {

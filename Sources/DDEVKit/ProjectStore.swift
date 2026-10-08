@@ -78,6 +78,27 @@ public final class ProjectStore {
 
     public func isBusy(_ name: String) -> Bool { busyProjects.contains(name) }
 
+    /// The resolved `ddev` path, for actions the app layer has to launch itself (terminal).
+    public var ddevExecutablePath: String { service.executable }
+
+    /// Launches an on-host database GUI through ddev's own host command for that client.
+    public func openDatabaseClient(_ client: DatabaseClient, project: DDEVProject) async {
+        await perform(project.name, label: "\(client.displayName) for \(project.name)") {
+            try await service.runHostCommand(client.ddevCommand, approot: project.approot)
+        }
+    }
+
+    /// Records an action the app layer performed itself (e.g. opening a terminal), so successes
+    /// and failures land in the same log as the ddev actions.
+    public func recordExternalAction(label: String, failure: String? = nil) {
+        if let failure {
+            lastError = failure
+            appendLog("❌ \(label) failed: \(failure)")
+        } else {
+            appendLog("✅ \(label) succeeded")
+        }
+    }
+
     // MARK: - On-demand detail loading
 
     public func isLoadingDetails(_ name: String) -> Bool { loadingDetails.contains(name) }

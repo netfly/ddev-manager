@@ -15,6 +15,10 @@ public struct DDEVService: Sendable {
         self.executablePath = executablePath
     }
 
+    /// The resolved `ddev` binary, needed by callers that have to spell the command out for an
+    /// external process (e.g. a terminal app running `ddev ssh`, which can't rely on the GUI PATH).
+    public var executable: String { executablePath }
+
     /// First existing candidate, honouring a user override.
     public static func resolveExecutable(override: String?) -> String? {
         let candidates = [override].compactMap { $0 }.filter { !$0.isEmpty } + defaultCandidatePaths
@@ -42,6 +46,23 @@ public struct DDEVService: Sendable {
     public func stop(_ name: String) async throws { _ = try await exec(["stop", name], timeout: 120) }
     public func restart(_ name: String) async throws { _ = try await exec(["restart", "-y", name], timeout: 300) }
     public func poweroff() async throws { _ = try await exec(["poweroff"], timeout: 180) }
+
+    /// Runs a ddev *host* command (`sequelace`, `tableplus`, …) for a project. These commands
+    /// resolve the project from the working directory via ddev's `DDEV_*` environment, not from
+    /// an argument, so they must run with the project root as cwd — hence `/bin/sh -c` rather
+    /// than invoking `ddev` directly.
+    public func runHostCommand(_ subcommand: String, approot: String) async throws {
+        let script = "cd \(ShellQuote.single(approot)) && exec "
+            + "\(ShellQuote.single(executablePath)) \(ShellQuote.single(subcommand))"
+        let result = try await runner.run(executable: "/bin/sh", arguments: ["-c", script], timeout: 120)
+        guard result.succeeded else {
+            throw DDEVError.commandFailed(
+                command: "ddev \(subcommand)",
+                exitCode: result.exitCode,
+                message: Self.firstMeaningfulMessage(result)
+            )
+        }
+    }
 
     @discardableResult
     private func exec(_ args: [String], timeout: TimeInterval) async throws -> CommandResult {

@@ -35,4 +35,6 @@ enum SettingsKey {
     static let ddevPath = "ddevExecutablePath"
     static let autoRefreshSeconds = "autoRefreshSeconds"
     static let appearance = "appearance"
+    static let terminalApp = "terminalApp"
+    static let databaseClient = "databaseClient"
 }

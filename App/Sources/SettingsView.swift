@@ -1,12 +1,33 @@
 import SwiftUI
 import ServiceManagement
+import DDEVKit
 
 struct SettingsView: View {
     @AppStorage(SettingsKey.ddevPath) private var ddevPath = ""
     @AppStorage(SettingsKey.autoRefreshSeconds) private var autoRefreshSeconds = 15
     @AppStorage(SettingsKey.appearance) private var appearance = AppearanceMode.system.rawValue
+    @AppStorage(SettingsKey.terminalApp) private var terminalApp = "auto"
+    @AppStorage(SettingsKey.databaseClient) private var databaseClient = "auto"
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
     @State private var loginError: String?
+
+    /// Marks clients whose app isn't present, and the two that need a ddev add-on instead.
+    private func clientLabel(_ client: DatabaseClient) -> String {
+        if client.isBrowserBased { return "\(client.displayName) (ddev add-on)" }
+        return client.isInstalled ? client.displayName : "\(client.displayName) (not installed)"
+    }
+
+    private var databaseClientHint: String {
+        let resolved = DatabaseClient.resolve(preference: databaseClient)
+        if let note = resolved?.setupNote {
+            return "Opens the project database via `ddev \(resolved!.ddevCommand)` — \(note)."
+        }
+        if let resolved {
+            return "Opens the project database via `ddev \(resolved.ddevCommand)`."
+        }
+        return "No supported database GUI found. Install Sequel Ace, TablePlus, TablePro, "
+            + "Querious, DBeaver, or MySQL Workbench."
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -55,6 +76,40 @@ struct SettingsView: View {
                 Text("Applies to the panel, its popovers, and this window. “System” follows macOS.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Terminal app")
+                    .font(.subheadline.weight(.medium))
+                Picker("", selection: $terminalApp) {
+                    Text("Auto-detect").tag("auto")
+                    ForEach(TerminalApp.known) { app in
+                        Text(app.isInstalled ? app.displayName : "\(app.displayName) (not installed)")
+                            .tag(app.id)
+                    }
+                }
+                .labelsHidden()
+                .frame(width: 240)
+                Text("Used for “Open in Terminal” and the `ddev ssh` button.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Database client")
+                    .font(.subheadline.weight(.medium))
+                Picker("", selection: $databaseClient) {
+                    Text("Auto-detect").tag("auto")
+                    ForEach(DatabaseClient.allCases) { client in
+                        Text(clientLabel(client)).tag(client.rawValue)
+                    }
+                }
+                .labelsHidden()
+                .frame(width: 240)
+                Text(databaseClientHint)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             VStack(alignment: .leading, spacing: 4) {

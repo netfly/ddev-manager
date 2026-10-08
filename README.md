@@ -16,6 +16,11 @@ have installed.
 - **Per-project actions**: Start, Stop, Restart, open primary URL in the browser, open the project
   folder in Finder (always visible, uses the real absolute path `ddev` reports), open in your terminal,
   open Mailpit, copy URL (context menu / right-click for the last few).
+- **Running projects** additionally get a **`ddev ssh`** button (opens a shell in the `web`
+  container in your preferred terminal app) and a **database** button that launches your preferred
+  on-host DB GUI through ddev's own host command (`ddev sequelace`, `ddev tableplus`,
+  `ddev tablepro`, `ddev querious`, `ddev dbeaver`, `ddev mysqlworkbench`, or the phpMyAdmin /
+  Adminer add-ons). Both are also in the right-click menu.
 - **Paused projects** can be resumed (Start) or fully stopped (Stop).
 - **Engine status badge** showing whether the container backend is reachable, with version — works
   with Docker Desktop, OrbStack, Rancher Desktop, or Colima, detected automatically via the active
@@ -88,6 +93,19 @@ Open via the "Settings…" link in the panel footer (or ⌘, while the app is fo
   so it covers the panel, every popover, and the Settings window; takes effect immediately, no
   restart needed.
 - **Launch at login** — registers/unregisters the app with `SMAppService`.
+- **Terminal app** — which terminal the "Open in Terminal" and `ddev ssh` actions use: auto-detect,
+  or pick Terminal, iTerm2, Warp, Ghostty, kitty, Alacritty, WezTerm, Hyper, Tabby. Apps that
+  aren't installed are marked. macOS has no portable "run this command in a terminal" API, so the
+  app writes a small `.command` script and hands it to the chosen app via `open -a` (verified with
+  Terminal.app and Warp); auto-detect falls back to Terminal.app, which always exists.
+- **Database client** — which GUI the database button opens, via ddev's own host command:
+  Sequel Ace, TablePlus, TablePro, Querious, DBeaver, MySQL Workbench, or the browser-based
+  phpMyAdmin / Adminer add-ons (see
+  [ddev's database GUI docs](https://docs.ddev.com/en/stable/users/usage/database-management/#database-guis)).
+  Auto-detect picks the first installed app. The ddev command only exists when the client is
+  actually installed — MySQL Workbench additionally needs
+  `cp ~/.ddev/commands/host/mysqlworkbench.example ~/.ddev/commands/host/mysqlworkbench`, and
+  phpMyAdmin/Adminer need `ddev add-on get ddev/ddev-phpmyadmin` / `ddev-adminer`.
 
 ## Troubleshooting
 
@@ -132,7 +150,8 @@ found).
 ```
 Sources/DDEVKit/      — library: parsing, CommandRunner/ProcessRunner, DDEVService, EngineProbe,
                         ContainerEngineController, DockerInspector, DDEVDescribe/DDEVVersionInfo
-                        parsers, ProjectDetails/EngineDetails, ProjectStore
+                        parsers, ProjectDetails/EngineDetails, ExternalApps
+                        (TerminalApp/DatabaseClient), ProjectStore
 Tests/DDEVKitTests/   — unit tests + recorded ddev/docker fixtures (list, describe, version,
                         stats, inspect, system df -v)
 App/Sources/          — SwiftUI views: DDEVManagerApp, PanelView, ProjectRow, EngineBadge,
