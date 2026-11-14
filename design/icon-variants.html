@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DDEV Icon Variants</title>
+<style>
+  :root { --bg:#f4f5f7; --fg:#1b1f27; --muted:#6b7280; --card:#fff; --line:#e3e6ea; --blue:#02a8e2; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14161b; --fg:#e8eaee; --muted:#9097a3; --card:#1d2027; --line:#2c3039; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; padding:32px 16px 64px; }
+  main { max-width:1100px; margin:0 auto; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  h2 { font-size:16px; margin:40px 0 4px; }
+  p.sub { color:var(--muted); margin:0 0 20px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; }
+  .card h3 { margin:0 0 2px; font-size:14px; }
+  .card p { margin:0 0 14px; color:var(--muted); font-size:12.5px; }
+  .big { width:100%; aspect-ratio:1; display:block; filter:drop-shadow(0 8px 14px rgba(0,0,0,.25)); }
+  .sizes { display:flex; align-items:flex-end; gap:12px; margin-top:12px; }
+  .sizes svg { filter:drop-shadow(0 1px 2px rgba(0,0,0,.3)); }
+  .tag { display:inline-block; font-size:11px; font-weight:600; background:var(--blue); color:#fff; border-radius:5px; padding:1px 7px; margin-right:6px; }
+  /* menu bar mockups */
+  .bar { height:30px; border-radius:7px; display:flex; align-items:center; justify-content:flex-end; gap:16px; padding:0 14px; margin-top:8px; font-size:13px; }
+  .bar.light { background:rgba(246,246,246,.92); color:#000; border:1px solid #ddd; }
+  .bar.dark { background:#2b2b2e; color:#fff; }
+  .bar .sel { background:rgba(127,127,127,.28); border-radius:5px; padding:3px 6px; display:flex; }
+  .bar svg { display:block; fill:currentColor; }
+  .zoom { display:flex; gap:10px; margin-top:12px; align-items:center; }
+  .zoom canvas { image-rendering:pixelated; border:1px solid var(--line); border-radius:4px; background:#fff; }
+  .note { color:var(--muted); font-size:12px; margin-top:10px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- Mark split into its three rings (outer / middle / inner). Native box ≈ 0 0 90 69 -->
+    <symbol id="ring1" viewBox="0 0 90 69"><path fill-rule="evenodd" d="m41.1 6.4h29.1l15.6 15.6v24.6l-15.6 15.6h-26.2c-.7-.8-1.8-1.4-3-1.4-2.1 0-3.9 1.7-3.9 3.9 0 2.1 1.7 3.9 3.9 3.9 1.2 0 2.2-.5 3-1.4h28.3l18.5-18.5v-28.8l-18.5-18.5h-31.2c-.7-.8-1.8-1.4-3-1.4-2.1 0-3.9 1.7-3.9 3.9 0 2.1 1.7 3.9 3.9 3.9 1.2 0 2.3-.6 3-1.4zm-3-4.2c.9 0 1.6.7 1.6 1.6s-.7 1.6-1.6 1.6-1.6-.7-1.6-1.6c0-.8.7-1.6 1.6-1.6zm3 60.9c.9 0 1.6.7 1.6 1.6s-.7 1.6-1.6 1.6-1.6-.7-1.6-1.6.7-1.6 1.6-1.6z"/></symbol>
+    <symbol id="ring2" viewBox="0 0 90 69"><path fill-rule="evenodd" d="m68.2 11.4h-37.2v.1c-.7-.8-1.7-1.2-2.8-1.2-2.1 0-3.9 1.7-3.9 3.9 0 2.1 1.7 3.9 3.9 3.9 1.3 0 2.5-.6 3.2-1.6h34.7l9.7 9.7v16.3l-9.7 9.7h-35.3c-.7-.8-1.8-1.4-3-1.4-2.1 0-3.9 1.700-3.9 3.9 0 2.1 1.7 3.9 3.9 3.9 1.2 0 2.200-.5 3-1.4h37.3l12.6-12.6v-20.6zm-40 1.2c.9 0 1.6.7 1.6 1.6s-.7 1.6-1.6 1.6-1.6-.7-1.6-1.6c-.1-.9.7-1.600 1.6-1.6zm-.3 40.4c.9 0 1.6.7 1.6 1.6s-.7 1.6-1.6 1.6-1.6-.7-1.6-1.6c-.1-.9.7-1.6 1.6-1.6z"/></symbol>
+    <symbol id="ring3" viewBox="0 0 90 69"><path fill-rule="evenodd" d="m62.4 47h-45.2c-.7.7-1.6 1.1-2.7 1.1-2.1 0-3.9-1.7-3.9-3.9 0-2.1 1.7-3.9 3.9-3.9 1.3 0 2.5.7 3.2 1.7h12.4l-5.2-5.2h-17.1c-.7.8-1.8 1.4-3 1.4-2.1 0-3.9-1.7-3.9-3.9 0-2.1 1.7-3.9 3.9-3.9 1.2 0 2.2.5 3 1.4h19.2l10.3 10.2h24.6l3.7-3.7v-7.9l-3.7-3.7h-22.9l5.2 5.2h10.1c.7-.8 1.8-1.4 3-1.4 2.1 0 3.9 1.7 3.9 3.900 0 2.1-1.7 3.9-3.9 3.9-1.2 0-2.2-.5-3-1.4h-12.2l-10.2-10.3h-13.5c-.7.8-1.8 1.4-3 1.4-2.1 0-3.9-1.7-3.9-3.9 0-2.1 1.7-3.9 3.9-3.9 1.2 0 2.2.5 3 1.4h45.6l6.7 6.7v12.1l-6.7 6.6zm-5.1-14.4c-.9 0-1.6.7-1.6 1.6s.7 1.6 1.6 1.6 1.6-.7 1.6-1.6c.1-.8-.7-1.6-1.6-1.6zm-41.8-10.2c-.9 0-1.6.7-1.6 1.6s.7 1.6 1.6 1.6 1.6-.7 1.6-1.6c0-.8-.7-1.6-1.6-1.6zm-1 20.2c-.9 0-1.6.7-1.6 1.6s.7 1.6 1.6 1.6 1.6-.7 1.6-1.6c.1-.9-.7-1.6-1.6-1.6zm-9.6-10c-.9 0-1.6.7-1.6 1.6s.7 1.6 1.6 1.6 1.6-.7 1.6-1.6c0-.8-.7-1.6-1.6-1.6z"/></symbol>
+    <symbol id="mark" viewBox="0 0 90 69"><use href="#ring1"/><use href="#ring2"/><use href="#ring3"/></symbol>
+    <symbol id="markSimple" viewBox="0 0 90 69"><use href="#ring1"/><use href="#ring2"/></symbol>
+    <!-- Wordmark (letters D D E V + blue E top bar). Native box ≈ 105 16 190 37 -->
+    <symbol id="word" viewBox="105 16 190 37">
+      <path fill-rule="evenodd" d="m112.2 23h22.8c3.9 0 7.1 3.2 7.1 7.1v8.4c0 3.9-3.2 7.1-7.1 7.1h-22.8zm22.9-6.1h-29v34.9h29c7.3 0 13.3-6 13.3-13.3v-8.4c-.1-7.3-6-13.2-13.3-13.2zm69.9 14.3v20.5h36.1v-6.2h-29.9v-8.1h24.9v-6.2h-24.9zm-43.1-8.2h22.8c3.9 0 7.1 3.2 7.1 7.1v8.4c0 3.9-3.2 7.1-7.1 7.1h-22.8zm22.8-6.1h-29v34.9h29c7.3 0 13.3-6 13.3-13.3v-8.4c0-7.3-6-13.2-13.3-13.2zm63 0 19.1 33 1 1.8h5l1.1-1.8 19.1-33h-7.2l-15.5 26.8-15.5-26.8z"/>
+      <path class="ebar" d="m211.2 23h29.9v-6.1h-36.1v6.1z"/>
+    </symbol>
+    <!-- macOS Big Sur+ squircle-ish container (824 content in 1024 canvas) -->
+    <clipPath id="sq"><rect x="100" y="100" width="824" height="824" rx="185"/></clipPath>
+    <linearGradient id="navy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c2b4a"/><stop offset="1" stop-color="#0d1526"/></linearGradient>
+    <linearGradient id="blueGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#28c0f2"/><stop offset="1" stop-color="#0284c4"/></linearGradient>
+    <linearGradient id="white" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e7edf3"/></linearGradient>
+    <linearGradient id="black" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22262e"/><stop offset="1" stop-color="#07080a"/></linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#02a8e2" stop-opacity=".45"/><stop offset="1" stop-color="#02a8e2" stop-opacity="0"/></radialGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".14"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  </defs>
+</svg>
+
+<main>
+  <h1>DDEV Manager — icon variants</h1>
+  <p class="sub">Built from the DDEV logo mark. Pick an app icon (A–E) and a menu bar icon (1–4); I'll then regenerate the asset catalogs.</p>
+
+  <h2>App icon</h2>
+  <p class="sub">1024 canvas with the standard macOS 824px rounded tile. Small previews below each are 64 / 32 / 16 px.</p>
+  <div class="grid" id="appGrid"></div>
+
+  <h2>Menu bar icon</h2>
+  <p class="sub">Template images (single color — macOS tints them for light/dark and the highlighted state). Shown at real size, 18pt tall.</p>
+  <div class="grid" id="barGrid"></div>
+  <p class="note">The full three-ring mark gets muddy at 18pt: the inner ring's lines are thinner than one point. Variant 2 drops the inner ring so it stays crisp.</p>
+</main>
+
+<script type="text/x-svg" id="tA"><!-- A: navy, blue mark (closest to current icon) -->
+  <g clip-path="url(#sq)"><rect x="100" y="100" width="824" height="824" fill="url(#navy)"/><rect x="100" y="100" width="824" height="824" fill="url(#sheen)"/></g>
+  <use href="#mark" x="222" y="270" width="580" height="445" fill="#02a8e2"/>
+</script>
+<script type="text/x-svg" id="tB"><!-- B: DDEV blue, white mark -->
+  <g clip-path="url(#sq)"><rect x="100" y="100" width="824" height="824" fill="url(#blueGrad)"/><rect x="100" y="100" width="824" height="824" fill="url(#sheen)"/></g>
+  <use href="#mark" x="222" y="270" width="580" height="445" fill="#fff"/>
+</script>
+<script type="text/x-svg" id="tC"><!-- C: navy, mark + wordmark -->
+  <g clip-path="url(#sq)"><rect x="100" y="100" width="824" height="824" fill="url(#navy)"/><rect x="100" y="100" width="824" height="824" fill="url(#sheen)"/></g>
+  <use href="#mark" x="292" y="215" width="440" height="337" fill="#02a8e2"/>
+  <use href="#word" x="252" y="620" width="520" height="101" fill="#fff" style="--e:#02a8e2"/>
+</script>
+<script type="text/x-svg" id="tD"><!-- D: white tile, blue mark -->
+  <g clip-path="url(#sq)"><rect x="100" y="100" width="824" height="824" fill="url(#white)"/></g>
+  <rect x="100.5" y="100.5" width="823" height="823" rx="185" fill="none" stroke="#000" stroke-opacity=".08"/>
+  <use href="#mark" x="222" y="270" width="580" height="445" fill="#02a8e2"/>
+</script>
+<script type="text/x-svg" id="tE"><!-- E: black with blue glow -->
+  <g clip-path="url(#sq)"><rect x="100" y="100" width="824" height="824" fill="url(#black)"/><circle cx="512" cy="512" r="420" fill="url(#glow)"/><rect x="100" y="100" width="824" height="824" fill="url(#sheen)"/></g>
+  <use href="#mark" x="222" y="270" width="580" height="445" fill="#3cc6f5"/>
+</script>
+
+<script>
+  const NS = "http://www.w3.org/2000/svg";
+  const appVariants = [
+    ["A", "Navy + blue mark", "Keeps today's dark tile, swaps the text for the logo mark.", "tA"],
+    ["B", "DDEV blue + white mark", "Brand-blue tile; strongest presence in the Dock.", "tB"],
+    ["C", "Mark + wordmark", "Navy tile with the full logo. Wordmark disappears below ~64px.", "tC"],
+    ["D", "Light tile", "White tile, blue mark. Clean, but blends into light Finder windows.", "tD"],
+    ["E", "Black + glow", "Dark glass with a soft blue glow behind the mark.", "tE"],
+  ];
+  function iconSVG(tpl, size) {
+    const s = document.createElementNS(NS, "svg");
+    s.setAttribute("viewBox", "0 0 1024 1024");
+    if (size) { s.setAttribute("width", size); s.setAttribute("height", size); }
+    s.innerHTML = document.getElementById(tpl).textContent;
+    return s;
+  }
+  const appGrid = document.getElementById("appGrid");
+  for (const [id, title, desc, tpl] of appVariants) {
+    const c = document.createElement("div"); c.className = "card";
+    c.innerHTML = `<h3><span class="tag">${id}</span>${title}</h3><p>${desc}</p>`;
+    const big = iconSVG(tpl); big.classList.add("big"); c.appendChild(big);
+    const row = document.createElement("div"); row.className = "sizes";
+    for (const px of [64, 32, 16]) row.appendChild(iconSVG(tpl, px));
+    c.appendChild(row); appGrid.appendChild(c);
+  }
+
+  // Menu bar variants: [id, title, desc, symbol, viewBox-width-ratio]
+  const barVariants = [
+    ["1", "Full mark", "All three rings.", "mark", 90/69],
+    ["2", "Simplified mark", "Outer + middle ring only. Recommended for legibility.", "markSimple", 90/69],
+    ["3", "Wordmark", "\"DDEV\" letters only — reads instantly but is wide.", "word", 190/37],
+    ["4", "Mark + wordmark", "Simplified mark followed by DDEV. Widest option.", "combo", null],
+  ];
+  function barIcon(sym, h) {
+    const s = document.createElementNS(NS, "svg");
+    if (sym === "combo") {
+      const w = h * (90/69) + 4 + (h*0.62) * (190/37);
+      s.setAttribute("width", w); s.setAttribute("height", h);
+      s.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      const mh = h, mw = h * 90/69, wh = h*0.62, ww = wh*190/37;
+      s.innerHTML = `<use href="#markSimple" width="${mw}" height="${mh}"/><use href="#word" x="${mw+4}" y="${(h-wh)/2}" width="${ww}" height="${wh}"/>`;
+    } else {
+      const ratio = sym === "word" ? 190/37 : 90/69;
+      const hh = sym === "word" ? h*0.7 : h;
+      s.setAttribute("width", hh*ratio); s.setAttribute("height", hh);
+      s.innerHTML = `<use href="#${sym}" width="100%" height="100%"/>`;
+    }
+    return s;
+  }
+  const barGrid = document.getElementById("barGrid");
+  for (const [id, title, desc, sym] of barVariants) {
+    const c = document.createElement("div"); c.className = "card";
+    c.innerHTML = `<h3><span class="tag">${id}</span>${title}</h3><p>${desc}</p>`;
+    for (const mode of ["light", "dark"]) {
+      const bar = document.createElement("div"); bar.className = "bar " + mode;
+      const sel = document.createElement("span"); sel.className = "sel"; sel.appendChild(barIcon(sym, 18));
+      bar.appendChild(barIcon(sym, 18));
+      bar.appendChild(sel);
+      bar.insertAdjacentHTML("beforeend", `<span>􀙇</span><span>10:42</span>`);
+      bar.firstChild.style.marginRight = "auto";
+      c.appendChild(bar);
+    }
+    // pixel zoom of 1x rendering
+    const z = document.createElement("div"); z.className = "zoom";
+    z.innerHTML = `<span class="note" style="margin:0">1× pixels, zoomed:</span>`;
+    const icon = barIcon(sym, 18);
+    const xml = new XMLSerializer().serializeToString(icon)
+      .replace("<svg", `<svg xmlns="${NS}" xmlns:xlink="http://www.w3.org/1999/xlink"`)
+      .replace(/<\/svg>$/, document.querySelector("svg defs").outerHTML + "</svg>");
+    const img = new Image(); const cv = document.createElement("canvas");
+    const w = Math.ceil(parseFloat(icon.getAttribute("width"))), h = 18;
+    cv.width = w; cv.height = h; cv.style.width = w*5 + "px"; cv.style.height = h*5 + "px";
+    img.onload = () => cv.getContext("2d").drawImage(img, 0, 0, w, h);
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(xml);
+    z.appendChild(cv); c.appendChild(z);
+    barGrid.appendChild(c);
+  }
+</script>
+<style>.ebar { fill: var(--e, currentColor); }</style>
+</body>
+</html>

@@ -1,40 +1,10 @@
 import AppKit
-import CoreText
 
-let fontName = "HelveticaNeue-CondensedBold"
-
-func font(_ size: CGFloat) -> NSFont {
-    NSFont(name: fontName, size: size) ?? NSFont.boldSystemFont(ofSize: size)
-}
-
-func fittingFont(text: String, maxWidth: CGFloat, maxHeight: CGFloat) -> NSFont {
-    var size = maxHeight
-    while size > 1 {
-        let f = font(size)
-        let w = (text as NSString).size(withAttributes: [.font: f]).width
-        if w <= maxWidth { return f }
-        size -= 1
-    }
-    return font(1)
-}
-
-/// Draws `text` centered on its actual visual ink bounds (via CTLineGetImageBounds),
-/// not on font ascent/descent/advance-width metrics — those pad unevenly around a
-/// single glyph like "D" and make it look off-center even though the box math is right.
-func drawCentered(_ text: String, font: NSFont, color: NSColor, in rect: NSRect, context: CGContext) {
-    let attrString = NSAttributedString(string: text, attributes: [.font: font, .foregroundColor: color])
-    let line = CTLineCreateWithAttributedString(attrString)
-    let inkBounds = CTLineGetImageBounds(line, context)
-    guard !inkBounds.isEmpty else { return }
-    let origin = NSPoint(
-        x: rect.minX + (rect.width - inkBounds.width) / 2 - inkBounds.minX,
-        y: rect.minY + (rect.height - inkBounds.height) / 2 - inkBounds.minY
-    )
-    context.saveGState()
-    context.textPosition = CGPoint(x: origin.x, y: origin.y)
-    CTLineDraw(line, context)
-    context.restoreGState()
-}
+// Renders the app icon and the menu bar template icon from the SVG masters in design/.
+// Run from the repo root:  swift scripts/generate_icons.swift
+//
+//   design/app-icon.svg      1024x1024, macOS icon grid (824px tile), DDEV mark + wordmark
+//   design/menubar-icon.svg  DDEV mark only, solid black (used as a template image)
 
 /// Renders into an explicit bitmap context sized exactly `pixelsWide` x `pixelsHigh`,
 /// bypassing NSImage.lockFocus's Retina backing-scale doubling.
@@ -53,7 +23,9 @@ func renderPNG(pixelsWide: Int, pixelsHigh: Int, draw: (NSRect) -> Void) -> Data
     ) else { fatalError("Could not create bitmap rep") }
 
     NSGraphicsContext.saveGraphicsState()
-    NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
+    let ctx = NSGraphicsContext(bitmapImageRep: rep)!
+    ctx.imageInterpolation = .high
+    NSGraphicsContext.current = ctx
     draw(NSRect(x: 0, y: 0, width: pixelsWide, height: pixelsHigh))
     NSGraphicsContext.restoreGraphicsState()
 
@@ -63,47 +35,44 @@ func renderPNG(pixelsWide: Int, pixelsHigh: Int, draw: (NSRect) -> Void) -> Data
     return data
 }
 
-func appIconPNG(pixelSize: Int) -> Data {
-    let size = CGFloat(pixelSize)
-    return renderPNG(pixelsWide: pixelSize, pixelsHigh: pixelSize) { rect in
-        let radius = size * 0.22
-        NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius).addClip()
-
-        let gradient = NSGradient(
-            starting: NSColor(calibratedRed: 0.06, green: 0.09, blue: 0.16, alpha: 1),
-            ending: NSColor(calibratedRed: 0.14, green: 0.19, blue: 0.30, alpha: 1)
-        )
-        gradient?.draw(in: rect, angle: -90)
-
-        let barHeight = size * 0.09
-        NSColor(calibratedRed: 0.22, green: 0.78, blue: 0.85, alpha: 1).setFill()
-        NSRect(x: 0, y: 0, width: size, height: barHeight).fill()
-
-        let text = "DDEV"
-        let f = fittingFont(text: text, maxWidth: size * 0.82, maxHeight: size * 0.52)
-        let attrs: [NSAttributedString.Key: Any] = [.font: f, .foregroundColor: NSColor.white]
-        let textSize = (text as NSString).size(withAttributes: attrs)
-        let origin = NSPoint(x: (size - textSize.width) / 2, y: (size - textSize.height) / 2 + barHeight * 0.4)
-        (text as NSString).draw(at: origin, withAttributes: attrs)
+func loadSVG(_ path: String) -> NSImage {
+    guard let image = NSImage(contentsOf: URL(fileURLWithPath: path)) else {
+        fatalError("Could not load \(path)")
     }
-}
-
-func menuBarPNG(pixelsWide: Int, pixelsHigh: Int) -> Data {
-    renderPNG(pixelsWide: pixelsWide, pixelsHigh: pixelsHigh) { rect in
-        let path = NSBezierPath(roundedRect: rect.insetBy(dx: rect.width * 0.06, dy: rect.height * 0.06),
-                                 xRadius: rect.width * 0.22, yRadius: rect.width * 0.22)
-        NSColor.black.withAlphaComponent(0.9).setStroke()
-        path.lineWidth = rect.width * 0.08
-        path.stroke()
-
-        let text = "D"
-        let f = fittingFont(text: text, maxWidth: rect.width * 0.6, maxHeight: rect.height * 0.62)
-        let context = NSGraphicsContext.current!.cgContext
-        drawCentered(text, font: f, color: .black, in: rect, context: context)
-    }
+    return image
 }
 
 let root = FileManager.default.currentDirectoryPath
+let appIconSVG = loadSVG("\(root)/design/app-icon.svg")
+let menuBarSVG = loadSVG("\(root)/design/menubar-icon.svg")
+
+func appIconPNG(pixelSize: Int) -> Data {
+    let size = CGFloat(pixelSize)
+    return renderPNG(pixelsWide: pixelSize, pixelsHigh: pixelSize) { rect in
+        // Standard macOS icon drop shadow beneath the 824/1024 tile.
+        let shadow = NSShadow()
+        shadow.shadowColor = NSColor.black.withAlphaComponent(0.35)
+        shadow.shadowOffset = NSSize(width: 0, height: -size * 0.012)
+        shadow.shadowBlurRadius = size * 0.03
+        shadow.set()
+        appIconSVG.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1)
+    }
+}
+
+// Menu bar canvas in points; the mark (90:69) is fit to `markHeight` and centered.
+let menuBarSize = NSSize(width: 22, height: 18)
+let markHeight: CGFloat = 16
+
+func menuBarPNG(scale: Int) -> Data {
+    let s = CGFloat(scale)
+    return renderPNG(pixelsWide: Int(menuBarSize.width * s), pixelsHigh: Int(menuBarSize.height * s)) { rect in
+        let h = markHeight * s
+        let w = h * menuBarSVG.size.width / menuBarSVG.size.height
+        let target = NSRect(x: (rect.width - w) / 2, y: (rect.height - h) / 2, width: w, height: h)
+        menuBarSVG.draw(in: target, from: .zero, operation: .sourceOver, fraction: 1)
+    }
+}
+
 let appIconDir = "\(root)/App/Assets.xcassets/AppIcon.appiconset"
 let menuBarDir = "\(root)/App/Assets.xcassets/MenuBarIcon.imageset"
 try FileManager.default.createDirectory(atPath: appIconDir, withIntermediateDirectories: true)
@@ -118,19 +87,13 @@ let appIconSizes: [(name: String, px: Int)] = [
 ]
 
 for entry in appIconSizes {
-    let data = appIconPNG(pixelSize: entry.px)
-    try data.write(to: URL(fileURLWithPath: "\(appIconDir)/\(entry.name)"))
+    try appIconPNG(pixelSize: entry.px).write(to: URL(fileURLWithPath: "\(appIconDir)/\(entry.name)"))
     print("wrote \(entry.name) (\(entry.px)px)")
 }
 
-let menuBarScales: [(name: String, scale: Int)] = [
-    ("menubar.png", 1), ("menubar@2x.png", 2), ("menubar@3x.png", 3),
-]
-
-for entry in menuBarScales {
-    let data = menuBarPNG(pixelsWide: 18 * entry.scale, pixelsHigh: 18 * entry.scale)
-    try data.write(to: URL(fileURLWithPath: "\(menuBarDir)/\(entry.name)"))
-    print("wrote \(entry.name)")
+for (name, scale) in [("menubar.png", 1), ("menubar@2x.png", 2), ("menubar@3x.png", 3)] {
+    try menuBarPNG(scale: scale).write(to: URL(fileURLWithPath: "\(menuBarDir)/\(name)"))
+    print("wrote \(name)")
 }
 
 print("Done.")
