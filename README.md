@@ -1,5 +1,9 @@
 # DDEV Manager
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Platform: macOS 14+](https://img.shields.io/badge/platform-macOS%2014%2B-lightgrey.svg)
+![Swift 6](https://img.shields.io/badge/Swift-6-orange.svg)
+
 A lightweight macOS menu bar app for managing [DDEV](https://ddev.com) projects — start, stop, restart,
 open in the browser, open the project folder, and power everything off — without touching a terminal.
 
@@ -7,6 +11,8 @@ open in the browser, open the project folder, and power everything off — witho
 
 No Dock icon, no daemon: it's a thin SwiftUI panel that shells out to the real `ddev` CLI you already
 have installed.
+
+Open source under the [MIT License](LICENSE). Not affiliated with the DDEV project.
 
 ## Features
 
@@ -59,6 +65,8 @@ have installed.
 ## Build
 
 ```bash
+git clone https://github.com/netfly/ddev-manager.git
+cd ddev-manager
 ./scripts/build.sh
 ```
 
@@ -78,7 +86,7 @@ distributing to other machines without adjustment.
 Output: `dist/DDEVManager-<version>.dmg` — a drag-to-install disk image containing the app, an
 `Applications` symlink, and an `INSTALL.txt` with requirements, the Gatekeeper step, and uninstall
 instructions. The script prints the DMG's size and `sha256` (handy for a Homebrew cask or a release
-note). Attach it to a GitLab/GitHub release, or just hand the file over.
+note). Attach it to a GitHub release, or just hand the file over.
 
 **Without an Apple Developer account** the DMG stays ad-hoc signed, so macOS quarantines it on the
 recipient's Mac and refuses the first launch ("damaged" / "unidentified developer"). They clear it
@@ -210,3 +218,15 @@ during the panel's auto-refresh.
 
 Run tests: `swift test`. Regenerate the Xcode project after changing `project.yml` or adding source
 files: `xcodegen generate`.
+
+## Contributing
+
+Issues and pull requests are welcome at
+[github.com/netfly/ddev-manager](https://github.com/netfly/ddev-manager). Please run `swift test` before
+opening a PR, and keep changes focused — one feature or fix per PR. For larger changes, open an issue
+first to discuss the approach.
+
+## License
+
+[MIT](LICENSE) © Markus Meier. DDEV is a trademark of its respective owners; this project is an
+independent, unofficial companion app.
