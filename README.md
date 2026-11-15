@@ -14,6 +14,8 @@ have installed.
 
 Open source under the [MIT License](LICENSE). Not affiliated with the DDEV project.
 
+![screenshot.png](assets/screenshot.png)
+
 ## Features
 
 - **Project list**, sorted with running projects first, then starting/paused/stopped, alphabetically
