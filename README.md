@@ -8,8 +8,8 @@
 > **This is a personal project.** - I built it for myself, but everybody is welcome to use it.
 > Please [report issues and feature requests](https://gitlab.mmcserv.de/apps/ddev-manager/-/issues).
 > I'd also appreciate it if you test it on your own setup and let me know how it works. I only use
-> it with [Colima](https://github.com/abiosoft/colima) and [Warp](https://www.warp.dev), so other
-> Docker providers and terminals haven't been tested much.
+> it with [Colima](https://github.com/abiosoft/colima), [SequelAce](https://sequel-ace.com/) and [Warp](https://www.warp.dev), so other
+> Docker providers, DB clients and terminals haven't been tested much.
 
 
 
