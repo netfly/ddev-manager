@@ -4,6 +4,16 @@
 ![Platform: macOS 14+](https://img.shields.io/badge/platform-macOS%2014%2B-lightgrey.svg)
 ![Swift 6](https://img.shields.io/badge/Swift-6-orange.svg)
 
+> [!IMPORTANT]
+> **This is a personal project.** - I built it for myself, but everybody is welcome to use it.
+> Please [report issues and feature requests](https://gitlab.mmcserv.de/apps/ddev-manager/-/issues).
+> I'd also appreciate it if you test it on your own setup and let me know how it works. I only use
+> it with [Colima](https://github.com/abiosoft/colima) and [Warp](https://www.warp.dev), so other
+> Docker providers and terminals haven't been tested much.
+
+
+
+## Description
 A lightweight macOS menu bar app for managing [DDEV](https://ddev.com) projects — start, stop, restart,
 open in the browser, open the project folder, and power everything off — without touching a terminal.
 
@@ -230,5 +240,5 @@ first to discuss the approach.
 
 ## License
 
-[MIT](LICENSE) © Markus Meier. DDEV is a trademark of its respective owners; this project is an
+[MIT](LICENSE) © Markus Meier. [DDEV](https://ddev.com/) is a trademark of its respective owners; this project is an
 independent, unofficial companion app.
