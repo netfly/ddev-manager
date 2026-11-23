@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Daily check for new ddev releases with an update banner in the panel
+
 ## [0.1.0] - 2026-11-15
 
 ### Added
