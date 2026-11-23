@@ -27,6 +27,10 @@ struct PanelView: View {
         VStack(alignment: .leading, spacing: 0) {
             header
             Divider()
+            if let update = store.availableUpdate {
+                updateBanner(update)
+                Divider()
+            }
             if !store.projects.isEmpty {
                 searchField
                 Divider()
@@ -79,6 +83,25 @@ struct PanelView: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+    }
+
+    private func updateBanner(_ update: DDEVRelease) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 6) {
+            Image(systemName: "arrow.down.circle").foregroundStyle(.tint)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("ddev \(update.tagName) is available (installed \(store.installedDDEVVersion ?? "?"))")
+                Text("Update with `brew upgrade ddev`")
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Button("Release notes") {
+                if let url = URL(string: update.htmlURL) { NSWorkspace.shared.open(url) }
+            }
+            .buttonStyle(.borderless)
+        }
+        .font(.system(size: 11))
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
     }

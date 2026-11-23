@@ -21,6 +21,9 @@ public final class ProjectStore {
     public private(set) var loadingDetails: Set<String> = []
     public private(set) var detailErrors: [String: String] = [:]
 
+    /// Last successfully fetched ddev release (persisted, so it survives restarts).
+    public private(set) var latestRelease: DDEVRelease?
+
     private let service: DDEVService
     private let engineProbe: EngineProbe
     private let containerEngine: ContainerEngineController
@@ -29,13 +32,22 @@ public final class ProjectStore {
     private let logLimit = 50
     private let logDefaultsKey = "ddevManager.actionLog"
     private let defaults: UserDefaults
+    private let fetchLatestRelease: DDEVRelease.Fetcher?
+    private let now: @Sendable () -> Date
+    private let updateCheckedAtKey = "ddevManager.updateCheck.checkedAt"
+    private let latestTagKey = "ddevManager.updateCheck.latestTag"
+    private let latestURLKey = "ddevManager.updateCheck.latestURL"
+    /// The running background update check, if any (internal so tests can await it).
+    @ObservationIgnored private(set) var updateCheckTask: Task<Void, Never>?
 
     public init(
         service: DDEVService,
         engineProbe: EngineProbe,
         containerEngine: ContainerEngineController,
         inspector: DockerInspector? = nil,
-        defaults: UserDefaults = .standard
+        defaults: UserDefaults = .standard,
+        fetchLatestRelease: DDEVRelease.Fetcher? = nil,
+        now: @escaping @Sendable () -> Date = Date.init
     ) {
         self.service = service
         self.engineProbe = engineProbe
@@ -43,6 +55,21 @@ public final class ProjectStore {
         self.inspector = inspector
         self.defaults = defaults
         self.log = defaults.stringArray(forKey: logDefaultsKey) ?? []
+        self.fetchLatestRelease = fetchLatestRelease
+        self.now = now
+        if let tag = defaults.string(forKey: latestTagKey), let url = defaults.string(forKey: latestURLKey) {
+            latestRelease = DDEVRelease(tagName: tag, htmlURL: url)
+        }
+    }
+
+    /// The installed ddev version, once `ddev version` has been read.
+    public var installedDDEVVersion: String? { cachedVersionInfo?.ddevVersion }
+
+    /// The newer release to advertise in the panel, or nil when up to date / unknown.
+    public var availableUpdate: DDEVRelease? {
+        guard let latestRelease, let installed = installedDDEVVersion,
+              DDEVRelease.isNewer(latestRelease.tagName, than: installed) else { return nil }
+        return latestRelease
     }
 
     /// Whether the panel can offer a working "Start …" button for the detected backend
@@ -53,6 +80,7 @@ public final class ProjectStore {
     public func refresh() async {
         isRefreshing = true
         defer { isRefreshing = false }
+        startUpdateCheckIfDue()
         engine = await engineProbe.probe()
         engineKind = await containerEngine.detectKind()
         do {
@@ -154,6 +182,25 @@ public final class ProjectStore {
         guard let info = try? await service.versionInfo() else { return nil }
         cachedVersionInfo = info
         return info
+    }
+
+    /// Fetches the latest ddev release at most once per 24 h, in the background so refresh is
+    /// never blocked. Failures are silent and leave the timestamp alone, so a later refresh retries.
+    private func startUpdateCheckIfDue() {
+        guard let fetchLatestRelease, updateCheckTask == nil else { return }
+        let checkedAt = defaults.object(forKey: updateCheckedAtKey) as? Date
+        let due = checkedAt.map { now().timeIntervalSince($0) >= 24 * 60 * 60 } ?? true
+        // Even when not due, the installed version is needed to judge the persisted release.
+        guard due || cachedVersionInfo == nil else { return }
+        updateCheckTask = Task {
+            defer { updateCheckTask = nil }
+            _ = await versionInfo()
+            guard due, let release = try? await fetchLatestRelease() else { return }
+            latestRelease = release
+            defaults.set(release.tagName, forKey: latestTagKey)
+            defaults.set(release.htmlURL, forKey: latestURLKey)
+            defaults.set(now(), forKey: updateCheckedAtKey)
+        }
     }
 
     private func perform(_ name: String, label: String, _ action: () async throws -> Void) async {

@@ -12,7 +12,8 @@ struct DDEVManagerApp: App {
             service: DDEVService(runner: runner, executablePath: path),
             engineProbe: EngineProbe(runner: runner),
             containerEngine: ContainerEngineController(runner: runner),
-            inspector: DockerInspector(runner: runner)
+            inspector: DockerInspector(runner: runner),
+            fetchLatestRelease: DDEVRelease.fetchLatestFromGitHub
         )
     }()
 

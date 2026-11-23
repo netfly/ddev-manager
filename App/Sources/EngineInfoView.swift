@@ -24,6 +24,7 @@ struct EngineInfoView: View {
                     Divider()
                     DetailSectionHeader(title: "Toolchain")
                     if let v = version.ddevVersion { DetailRow(label: "ddev", value: v) }
+                    if let v = store.latestRelease?.tagName { DetailRow(label: "latest", value: v) }
                     if let v = version.dockerVersion { DetailRow(label: "docker", value: v) }
                     if let v = version.dockerAPIVersion { DetailRow(label: "docker API", value: v) }
                     if let v = version.buildxVersion { DetailRow(label: "buildx", value: v) }
