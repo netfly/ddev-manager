@@ -114,6 +114,19 @@ final class ProjectStoreUpdateCheckTests: XCTestCase {
     }
 
     @MainActor
+    func test_installedNewerThanLatest_showsNoBanner() async throws {
+        let source = FakeReleaseSource()
+        source.result = .success(DDEVRelease(tagName: "v1.25.3", htmlURL: "https://example.test/v1.25.3"))
+        let store = try makeStore(source)
+
+        await refreshAndWait(store)
+
+        XCTAssertEqual(source.calls, 1)
+        XCTAssertEqual(store.latestRelease?.tagName, "v1.25.3")
+        XCTAssertNil(store.availableUpdate, "installed v1.25.4 is newer than latest v1.25.3")
+    }
+
+    @MainActor
     func test_prereleaseLatest_showsNoBanner() async throws {
         let source = FakeReleaseSource()
         source.result = .success(DDEVRelease(tagName: "v1.26.0-rc1", htmlURL: "https://example.test/rc"))
