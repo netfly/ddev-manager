@@ -33,7 +33,9 @@ public struct DDEVRelease: Equatable, Sendable, Decodable {
     /// `v1.25.4` / `1.25.4` → `[1, 25, 4]`; prerelease/suffixed or malformed tags → nil.
     public static func numericVersion(_ tag: String) -> [Int]? {
         let core = tag.hasPrefix("v") ? tag.dropFirst() : Substring(tag)
-        let parts = core.split(separator: ".", omittingEmptySubsequences: false).map { Int($0) }
+        // Int("+4") would parse, so require plain ASCII digits.
+        let parts = core.split(separator: ".", omittingEmptySubsequences: false)
+            .map { $0.allSatisfy { $0.isASCII && $0.isNumber } ? Int($0) : nil }
         guard parts.count == 3, parts.allSatisfy({ ($0 ?? -1) >= 0 }) else { return nil }
         return parts.compactMap { $0 }
     }

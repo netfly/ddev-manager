@@ -18,6 +18,7 @@ final class DDEVReleaseVersionTests: XCTestCase {
         XCTAssertFalse(DDEVRelease.isNewer("v1.26", than: "v1.25.4"))
         XCTAssertFalse(DDEVRelease.isNewer("", than: "v1.25.4"))
         XCTAssertFalse(DDEVRelease.isNewer("v1.26.0", than: "v1.25.4-dirty"))
+        XCTAssertFalse(DDEVRelease.isNewer("v1.26.0", than: "v1.25.+4"))
     }
 
     func test_decodesGitHubPayload() throws {
@@ -97,7 +98,7 @@ final class ProjectStoreUpdateCheckTests: XCTestCase {
     }
 
     @MainActor
-    func test_failure_isSilentAndRetriesOnNextRefresh() async throws {
+    func test_failure_isSilentAndRetriesAfterAnHour() async throws {
         let source = FakeReleaseSource()
         source.result = .failure(URLError(.notConnectedToInternet))
         let store = try makeStore(source)
@@ -109,7 +110,11 @@ final class ProjectStoreUpdateCheckTests: XCTestCase {
 
         source.result = .success(DDEVRelease(tagName: "v1.25.5", htmlURL: "https://example.test/v1.25.5"))
         await refreshAndWait(store)
-        XCTAssertEqual(source.calls, 2, "timestamp not stored on failure, so the next refresh retries")
+        XCTAssertEqual(source.calls, 1, "no retry on every refresh after a failure")
+
+        source.now += 3600
+        await refreshAndWait(store)
+        XCTAssertEqual(source.calls, 2, "timestamp not stored on failure, so a refresh an hour later retries")
         XCTAssertEqual(store.availableUpdate?.tagName, "v1.25.5")
     }
 

@@ -39,6 +39,8 @@ public final class ProjectStore {
     private let latestURLKey = "ddevManager.updateCheck.latestURL"
     /// The running background update check, if any (internal so tests can await it).
     @ObservationIgnored private(set) var updateCheckTask: Task<Void, Never>?
+    /// After a failed check, wait an hour before retrying (refresh runs every few seconds; GitHub allows 60 calls/h).
+    @ObservationIgnored private var updateRetryAfter: Date?
 
     public init(
         service: DDEVService,
@@ -185,17 +187,23 @@ public final class ProjectStore {
     }
 
     /// Fetches the latest ddev release at most once per 24 h, in the background so refresh is
-    /// never blocked. Failures are silent and leave the timestamp alone, so a later refresh retries.
+    /// never blocked. Failures are silent and leave the timestamp alone, so a refresh an hour later retries.
     private func startUpdateCheckIfDue() {
         guard let fetchLatestRelease, updateCheckTask == nil else { return }
         let checkedAt = defaults.object(forKey: updateCheckedAtKey) as? Date
-        let due = checkedAt.map { now().timeIntervalSince($0) >= 24 * 60 * 60 } ?? true
+        let due = (checkedAt.map { now().timeIntervalSince($0) >= 24 * 60 * 60 } ?? true)
+            && (updateRetryAfter.map { now() >= $0 } ?? true)
         // Even when not due, the installed version is needed to judge the persisted release.
         guard due || cachedVersionInfo == nil else { return }
         updateCheckTask = Task {
             defer { updateCheckTask = nil }
             _ = await versionInfo()
-            guard due, let release = try? await fetchLatestRelease() else { return }
+            guard due else { return }
+            guard let release = try? await fetchLatestRelease() else {
+                updateRetryAfter = now().addingTimeInterval(60 * 60)
+                return
+            }
+            updateRetryAfter = nil
             latestRelease = release
             defaults.set(release.tagName, forKey: latestTagKey)
             defaults.set(release.htmlURL, forKey: latestURLKey)
